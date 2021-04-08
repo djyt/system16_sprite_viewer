@@ -1,8 +1,9 @@
 #include <iostream>
 #include <fstream>
 
-#include "stdint.hpp"
+#include "globals.hpp"
 #include "romloader.hpp"
+#include "config.hpp"
 
 /***************************************************************************
     Binary File Loader. 
@@ -14,80 +15,98 @@
     See license.txt for more details.
 ***************************************************************************/
 
-// See: http://www.cplusplus.com/doc/tutorial/files/
-// Default path in Visual Studio: Visual Studio 2010\Projects\outrun\outrun
-
 RomLoader::RomLoader()
 {
-
+    spr_data = nullptr;
+    pal_data = nullptr;
 }
 
 RomLoader::~RomLoader()
 {
-    //delete[] rom;
+    if (spr_data != nullptr) delete[] spr_data;
+    if (pal_data != nullptr) delete[] pal_data;
 }
 
-void RomLoader::init(const uint32_t length)
+void RomLoader::init(sprites_t sprites)
 {
-    this->length = length;
-    rom = new uint8_t[length];
+    format = sprites.format;
+
+    // Calculate total length
+    spr_data_len = 0;
+    for (rom_t& rom : sprites.rom)
+        spr_data_len += rom.length;
+    spr_data = new uint8_t[spr_data_len];
+
+    // Use correct interleave value
+    int interleave = UNKNOWN;
+    switch (format)
+    {
+        case format::PIX4:  interleave = 2; break;
+        case format::PIX8:  interleave = 4; break;
+        case format::PIX16: interleave = 8; break;
+    }
+
+    // Interleave roms
+    for (rom_t& rom : sprites.rom)
+        load(rom.filename, rom.src_offset, rom.dst_offset, rom.length, interleave);
+
+    // Load Palette
+    pal_data_len = -1;
+    if (!sprites.palname.empty())
+        pal_data_len = load_binary(sprites.palname, &pal_data);
 }
 
 void RomLoader::unload(void)
 {
-    delete[] rom;
+    delete[] spr_data;
 }
 
-bool RomLoader::load(const char* filename, const int offset, const int length, const uint8_t interleave)
+bool RomLoader::load(std::string filename, const int src_offset, const int dst_offset, const int length, const uint8_t interleave)
 {
-    std::string path = "roms/";
-    path += std::string(filename);
-
     // Open rom file
-    std::ifstream src(path, std::ios::in | std::ios::binary);
+    std::ifstream src(filename, std::ios::in | std::ios::binary);
     if (!src)
     {
-        error("cannot open rom:", filename);
+        std::cerr << "cannot open rom: " << filename << std::endl;
         return false; // fail
     }
  
-    char ch;
+    if (src_offset > 0) 
+        src.seekg(src_offset, std::ios::beg);
 
+    char ch;
     for (int i = 0; i < length; i++)
     {
         src.get(ch); // Get from source
-        rom[(i * interleave) + offset] = ch;
+        spr_data[(i * interleave) + dst_offset] = ch;
     }
 
     src.close();
     return true; // success
 }
 
-bool RomLoader::load_continue(const char* filename, const int src_offset, const int dst_offset, const int length, const uint8_t interleave)
+int RomLoader::load_binary(std::string filename, uint8_t** dest)
 {
-    std::string path = "roms/";
-    path += std::string(filename);
-
-    // Open rom file
-    std::ifstream src(path, std::ios::in | std::ios::binary);
+    std::ifstream src(filename, std::ios::in | std::ios::binary);
     if (!src)
     {
-        error("cannot open rom:", filename);
-        return false; // fail
+        std::cout << "cannot open file: " << filename << std::endl;
+        return -1;
     }
 
-    src.seekg(src_offset, std::ios::beg);
- 
-    char ch;
+    int fs = get_filesize(filename);
 
-    for (int i = 0; i < length; i++)
-    {
-        src.get(ch); // Get from source
-        rom[(i * interleave) + dst_offset] = ch;
-    }
+    // Read file
+    char* buffer = new char[fs];
+    src.read(buffer, fs);
 
+    // Update pointer to pointer
+    *dest = (uint8_t*) buffer;
+
+    // Clean Up
     src.close();
-    return true; // success
+
+    return fs; // return file size on success
 }
 
 void RomLoader::error(const char* p, const char* p2)
@@ -95,44 +114,42 @@ void RomLoader::error(const char* p, const char* p2)
     std::cout << p << ' ' << p2 << std::endl;
 }
 
-uint32_t RomLoader::get_filesize(const char* filename)
+uint32_t RomLoader::get_filesize(std::string filename)
 {
-    std::string path = "roms/";
-    path += std::string(filename);
-    std::ifstream src(path, std::ios::ate | std::ios::binary);
+    std::ifstream src(filename, std::ios::ate | std::ios::binary);
     return (uint32_t) src.tellg();
 }
 
 uint32_t RomLoader::read32(uint32_t* addr)
 {    
-    uint32_t data = (rom[*addr] << 24) | (rom[*addr+1] << 16) | (rom[*addr+2] << 8) | (rom[*addr+3]);
+    uint32_t r = (spr_data[*addr] << 24) | (spr_data[*addr+1] << 16) | (spr_data[*addr+2] << 8) | (spr_data[*addr+3]);
     *addr += 4;
-    return data;
+    return r;
 }
 
 uint16_t RomLoader::read16(uint32_t* addr)
 {
-    uint16_t data = (rom[*addr] << 8) | (rom[*addr+1]);
+    uint16_t r = (spr_data[*addr] << 8) | (spr_data[*addr+1]);
     *addr += 2;
-    return data;
+    return r;
 }
 
 uint8_t RomLoader::read8(uint32_t* addr)
 {
-    return rom[(*addr)++]; 
+    return spr_data[(*addr)++]; 
 }
 
 uint32_t RomLoader::read32(uint32_t addr)
 {    
-    return (rom[addr] << 24) | (rom[addr+1] << 16) | (rom[addr+2] << 8) | rom[addr+3];
+    return (spr_data[addr] << 24) | (spr_data[addr+1] << 16) | (spr_data[addr+2] << 8) | spr_data[addr+3];
 }
 
 uint16_t RomLoader::read16(uint32_t addr)
 {
-    return (rom[addr] << 8) | rom[addr+1];
+    return (spr_data[addr] << 8) | spr_data[addr+1];
 }
 
 uint8_t RomLoader::read8(uint32_t addr)
 {
-    return rom[addr];
+    return spr_data[addr];
 }

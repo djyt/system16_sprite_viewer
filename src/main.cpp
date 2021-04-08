@@ -3,9 +3,9 @@
 #include <SDL.h>
 
 #include "globals.hpp"
+#include "config.hpp"
 #include "input.hpp"
 #include "video.hpp"
-#include "roms.hpp"
 #include "romloader.hpp"
 
 static void quit_func(int code)
@@ -25,6 +25,7 @@ static void handle_key_down(SDL_Keysym* keysym)
         case SDLK_SPACE:
             //should_rotate = !should_rotate;
             break;
+        
         default:
             break;
     }
@@ -210,29 +211,38 @@ int main(int argc, char* argv[])
     std::cout << "\n" << settings::PROGRAM_NAME << " " << settings::VERSION << std::endl;
     std::cout << "http://reassembler.blogspot.com\n" << std::endl;
 
-    if (argc < 2)
+    if (argc < 1)
     {
-        std::cout << "Invalid number of filenames provided.\nPlease specify a bank of System 16 sprite files." << std::endl;
-        std::cout << "This should be 2 files for System 16 titles, 4 for X-Board and 8 for Y-Board." << std::endl;
-        std::cout << "\nExamples..." << std::endl;
-        std::cout << "OutRun:     " << argv[0] << " mpr-10371.9 mpr-10373.10 mpr-10375.11 mpr-10377.12" << std::endl;
-        std::cout << "Golden Axe: " << argv[0] << " mpr-12379.ic12 mpr-12378.ic9" << std::endl;
+        std::cout << "Please specify an Sprite XML config file to load. Example:" << std::endl;
+        std::cout << "OutRun:     " << argv[0] << " outrun.xml" << std::endl;
         return 1;
     }
 
+    config.set_config_file(argv[1]);
+    if (!config.load())
+        return 1;
+
     // Load Roms
-    if (roms.init(argc, argv))
-    {
-        std::cout << "Page Up / Page Down & Cursors Up & Down to scroll" << std::endl;
-        std::cout << "Space to save a screenshot" << std::endl;
-        std::cout << "Cursors Left & Right to set OutRun palette" << std::endl;
+    RomLoader romloader;
+    romloader.init(config.sprites);
 
-        // Initialize SDL Video
-        if (!video.init(roms.sprites.rom))
-            quit_func(1);
+    // Initialize SDL Video
+    if (!video.init(romloader.pal_data, romloader.pal_data_len))
+        quit_func(1);
 
-        main_loop();
-    }
+    // Convert to Sprite Format
+    video.sprite_layer->init(romloader.spr_data, romloader.format, romloader.spr_data_len);
+
+    // Delete original data
+    romloader.unload();
+
+    std::cout << "Page Up / Page Down & Cursors Up & Down to scroll" << std::endl;
+    std::cout << "Space to save a screenshot" << std::endl;
+
+    if (romloader.pal_data_len > 0)
+        std::cout << "Cursors Left & Right to set a palette" << std::endl;
+
+    main_loop();
 
     // Never Reached
     return 0;

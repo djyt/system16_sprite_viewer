@@ -15,16 +15,17 @@ public:
 
     hwsprites();
     ~hwsprites();
-    void init(const uint8_t*);
-    void render();
-    void render4();
-    void render8();
-    void render16();
+    void init(const uint8_t*, int format, int length);
+    //void render();
+    void (hwsprites::*render)();
 
 private:
     uint32_t sprites_length;
-    uint32_t* sprites; // Converted sprites
+    uint32_t* sprdata; // Converted sprites
 
+    void render4();
+    void render8();
+    void render16();
     void draw_pixel(const int32_t x, const int32_t y, const uint16_t pix);
 };
 

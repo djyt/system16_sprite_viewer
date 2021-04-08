@@ -13,8 +13,6 @@ class hwsprites;
 class Video
 {
 public:
-	static const uint16_t PALETTE_ENTRIES = 32;
-
     // Window Width & Height
     int win_width, win_height;
 
@@ -27,7 +25,7 @@ public:
 
 	Video();
 	void draw_frame();
-	int init(uint8_t*);
+	int init(uint8_t* pal, int pal_data_len);
 	~Video();
 
     void sdl_screen_size();
@@ -42,9 +40,11 @@ public:
     void prev_palette();
 
 private:
-    uint32_t rgb[PALETTE_ENTRIES];
+    static const uint16_t BYTES_PER_ENTRY = 32;
+    uint32_t rgb[BYTES_PER_ENTRY / 2];
 
     uint32_t *screen_pixels;
+    uint8_t* palette;
 
 	SDL_Surface *surface;
 
@@ -68,6 +68,8 @@ private:
     // Original Screen Width & Height
     uint16_t scn_width, scn_height;
 
+    // Number of palette entries
+    int max_pal_entries;
     const static int PAL_GREYSCALE = -1;
 
     // Background colour cycling

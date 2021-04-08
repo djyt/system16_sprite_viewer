@@ -1,6 +1,5 @@
 #include "globals.hpp"
 #include "video.hpp"
-#include "palette.hpp"
 
 Video video;
 
@@ -15,9 +14,10 @@ Video::Video(void)
     renderer      = NULL;
     surface       = NULL;
     screen_pixels = NULL;
-    scn_width = 0;
-    scn_height = 0;
-    bg_index = 0;
+    sprite_layer  = new hwsprites();
+    scn_width     = 0;
+    scn_height    = 0;
+    bg_index      = 0;
     cycle_background(false);
     scale = 2;
 }
@@ -27,17 +27,23 @@ Video::~Video(void)
     SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    delete sprite_layer;
 }
 
-int Video::init(uint8_t* sprite_rom)
+int Video::init(uint8_t* pal, int pal_data_len)
 {
-    sprite_layer = new hwsprites();
+    // Setup Custom Palette
+    this->palette = pal;
+    if (pal == nullptr || pal_data_len == -1)
+        max_pal_entries = -1;
+    else
+        max_pal_entries = (pal_data_len / BYTES_PER_ENTRY) - 1;
 
     // Setup SDL Screen size
     sdl_screen_size();
     
     // Base this on actual screen size
-    win_width  = 256 * scale;
+    win_width  = S16_SCREEN_WIDTH * scale;
     win_height = scn_height / 2;
     
     int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
@@ -56,10 +62,6 @@ int Video::init(uint8_t* sprite_rom)
     Rshift = surface->format->Rshift;
     Gshift = surface->format->Gshift;
     Bshift = surface->format->Bshift;
-
-    // Convert S16 sprites
-    sprite_layer->init((uint8_t*) sprite_rom);
-    delete[] sprite_rom;
 
     selected_palette = PAL_GREYSCALE;
 
@@ -86,8 +88,6 @@ void Video::set_scale(int s)
 
 bool Video::resize_window(int w, int h)
 {
-    std::cout << "resize to: " << w << "," << h << std::endl;
-
     win_width  = w;
     win_height = h;
 
@@ -155,8 +155,8 @@ bool Video::resize_window(int w, int h)
 void Video::draw_frame(void)
 {
     clear_screen();
-    sprite_layer->render();
-
+    //(sprite_layer.*(sprite_layer.render))();
+    (sprite_layer->*(sprite_layer->render))();
     SDL_UpdateTexture(texture, NULL, screen_pixels, win_width * sizeof (Uint32));
     SDL_RenderCopy(renderer, texture, &src_rect, &dst_rect);
     SDL_RenderPresent(renderer);
@@ -178,7 +178,6 @@ void Video::set_pixel(uint32_t x, uint32_t y, uint8_t index)
     {
         screen_pixels[(y * win_width) + x] = rgb[index];
     }
-
 }
 
 void Video::clear_screen()
@@ -195,7 +194,9 @@ SDL_Surface* Video::get_surface()
 
 void Video::next_palette()
 {
-    if (++video.selected_palette > 255)
+    if (max_pal_entries < 0) return;
+
+    if (++video.selected_palette > max_pal_entries)
         video.selected_palette = PAL_GREYSCALE;
 
     refresh_palette();
@@ -203,8 +204,10 @@ void Video::next_palette()
 
 void Video::prev_palette()
 {
+    if (max_pal_entries < 0) return;
+
     if (--video.selected_palette < PAL_GREYSCALE)
-        video.selected_palette = 255;
+        video.selected_palette = max_pal_entries;
 
     refresh_palette();
 }
@@ -227,11 +230,11 @@ void Video::refresh_palette()
         return;
 
     // 32 Bytes, 16 Entries Per Palette
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < (BYTES_PER_ENTRY / 2); i++)
     {
-        uint32_t pal = selected_palette * PALETTE_ENTRIES;
+        uint32_t pal = selected_palette * BYTES_PER_ENTRY;
 
-        uint32_t a = (PAL[(i * 2) + pal] << 8) | PAL[(i * 2) + pal + 1];
+        uint32_t a = (palette[(i * 2) + pal] << 8) | palette[(i * 2) + pal + 1];
         uint32_t r = (a & 0x000f) << 1; // r rrr0
         uint32_t g = (a & 0x00f0) >> 3; // g ggg0
         uint32_t b = (a & 0x0f00) >> 7; // b bbb0

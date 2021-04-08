@@ -1,6 +1,5 @@
 #include "globals.hpp"
 #include "hwsprites.hpp"
-#include "roms.hpp"
 
 /***************************************************************************
     Video Emulation: OutRun Sprite Rendering Hardware.
@@ -45,21 +44,22 @@ hwsprites::hwsprites()
 {
     src_width = 0;
     src_height = 0;
+    render = nullptr;
 }
 
 hwsprites::~hwsprites()
 {
-    delete[] sprites;
+    delete[] sprdata;
 }
 
-void hwsprites::init(const uint8_t* src_sprites)
+void hwsprites::init(const uint8_t* src_sprites, int format, int length)
 {
     // Convert S16 tiles to a more useable format
-    if (roms.type == roms.PIX8 || roms.type == roms.PIX16)
+    if (format == format::PIX8 || format == format::PIX16)
     {
         const uint8_t *spr = src_sprites;
-        sprites_length = roms.sprites.length >> 2;
-        sprites = new uint32_t[sprites_length];
+        sprites_length = length >> 2;
+        sprdata = new uint32_t[sprites_length];
 
         for (uint32_t i = 0; i < sprites_length; i++)
         {
@@ -68,45 +68,43 @@ void hwsprites::init(const uint8_t* src_sprites)
             uint8_t d1 = *spr++;
             uint8_t d0 = *spr++;
 
-            if (roms.type == roms.PIX8)
-                sprites[i] = (d0 << 24) | (d1 << 16) | (d2 << 8) | d3;
-            else if (roms.type == roms.PIX16)
-                sprites[i] = (d3 << 24) | (d2 << 16) | (d1 << 8) | d0;
+            if (format == format::PIX8)
+            {
+                sprdata[i] = (d0 << 24) | (d1 << 16) | (d2 << 8) | d3;
+                render = &hwsprites::render8;
+            }
+            else if (format == format::PIX16)
+            {
+                sprdata[i] = (d3 << 24) | (d2 << 16) | (d1 << 8) | d0;
+                render = &hwsprites::render16;
+            }
+
         }
     }
-    else if (roms.type == roms.PIX4)
+    else if (format == format::PIX4)
     {
         const uint8_t *spr = src_sprites;
-        sprites_length = roms.sprites.length >> 1;
-        sprites = new uint32_t[sprites_length];
+        sprites_length = length >> 1;
+        sprdata = new uint32_t[sprites_length];
 
         for (uint32_t i = 0; i < sprites_length; i++)
         {
             uint8_t d1 = *spr++;
             uint8_t d0 = *spr++;
 
-            sprites[i] = (d1 << 8) | d0;
+            sprdata[i] = (d1 << 8) | d0;
         }
+        render = &hwsprites::render4;
     }
 
     display_y_off = 0;
-}
-
-void hwsprites::render()
-{
-    if (roms.type == roms.PIX16)
-        render16();
-    else if (roms.type == roms.PIX8)
-        render8();
-    else if (roms.type == roms.PIX4)
-        render4();
 }
 
 // System 16B Rendering
 void hwsprites::render4()
 {
     int32_t pix;
-    uint16_t pixels = sprites[0];
+    uint16_t pixels = 0;
     int32_t y = 0;
 
     // Screen X-Coordinates
@@ -114,9 +112,10 @@ void hwsprites::render4()
  
     for (uint32_t counter = 0; counter < sprites_length; counter++)
     {
-        pixels = sprites[counter];
+        pixels = sprdata[counter];
 
-        if (sx == 0 && pixels == 0xf)
+        //if (sx == 0 && (pixels & 0xf) == 0xf)
+        if (sx == 0 && (!pixels || (pixels & 0xf) == 0xf))
             continue;
         
         if (y >= display_y_off && y < display_y_off + src_height)
@@ -145,8 +144,8 @@ void hwsprites::render4()
 // OutRun & X-Board Rendering
 void hwsprites::render8()
 {
-    int32_t pix;
-    uint32_t pixels = sprites[0];
+    uint8_t pix;
+    uint32_t pixels = 0;
     int32_t y = 0;
 
     // Screen X-Coordinates
@@ -154,7 +153,7 @@ void hwsprites::render8()
    
     for (uint32_t counter = 0; counter < sprites_length; counter++)
     {
-        pixels = sprites[counter];
+        pixels = sprdata[counter];
 
         if (sx == 0 && pixels == 0x000000F0)
             continue;
@@ -190,8 +189,8 @@ void hwsprites::render8()
 void hwsprites::render16()
 {
     int32_t pix;
-    uint32_t pixelsL = sprites[0];
-    uint32_t pixelsH = sprites[1];
+    uint32_t pixelsL = sprdata[0];
+    uint32_t pixelsH = sprdata[1];
     int32_t y = 0;
 
     // Screen X-Coordinates
@@ -199,8 +198,8 @@ void hwsprites::render16()
    
     for (uint32_t counter = 0; counter < sprites_length; counter+=2)
     {
-        pixelsH = sprites[counter];
-        pixelsL = sprites[counter + 1];
+        pixelsH = sprdata[counter];
+        pixelsL = sprdata[counter + 1];
 
         if (sx == 0 && pixelsH == 0 && pixelsL == 0xF)
             continue;
@@ -242,7 +241,7 @@ void hwsprites::render16()
 
 void hwsprites::draw_pixel(const int32_t x, const int32_t y, const uint16_t pix)
 {
-    if (x >= 0 && x <= 319 && pix != 0 && pix != 15)
+    if (x >= 0 && x < S16_SCREEN_WIDTH && pix != 0 && pix != 15)
     {
         video.set_pixel(x, y, (uint8_t) pix);
     }   
