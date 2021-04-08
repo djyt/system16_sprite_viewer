@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<sprites>
+    <!-- Sprite Format:
+         0 = System 16 (Golden Axe, Shinobi etc.)
+         1 = OutRun / X-Board (AfterBurner etc.)
+         2 = Y-Board (Power Drift etc.)
+    -->
+    <format>1</format>
+    <roms>
+        <rom name="roms/outrun/mpr-10371.9" offset="0x000000" length="0x20000"/>
+        <rom name="roms/outrun/mpr-10373.10" offset="0x000001" length="0x20000"/>
+        <rom name="roms/outrun/mpr-10375.11" offset="0x000002" length="0x20000"/>
+        <rom name="roms/outrun/mpr-10377.12" offset="0x000003" length="0x20000"/>
+        <rom name="roms/outrun/mpr-10372.13" offset="0x080000" length="0x20000"/>
+        <rom name="roms/outrun/mpr-10374.14" offset="0x080001" length="0x20000"/>
+        <rom name="roms/outrun/mpr-10376.15" offset="0x080002" length="0x20000"/>
+        <rom name="roms/outrun/mpr-10378.16" offset="0x080003" length="0x20000"/>
+    </roms>
+    <!-- Sprite palette extracted from Main 68K Code at location 0x14ed8. Length 0x2000. -->
+    <palette>roms/outrun/outrun.pal</palette>
+</sprites>

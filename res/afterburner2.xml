@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<sprites>
+    <!-- Sprite Format:
+         0 = System 16 (Golden Axe, Shinobi etc.)
+         1 = OutRun / X-Board (AfterBurner etc.)
+         2 = Y-Board (Power Drift etc.)
+    -->
+    <format>1</format>
+    <roms>
+        <rom name="roms/aburner2/mpr-10932.90" offset="0x000000" length="0x20000"/>
+        <rom name="roms/aburner2/mpr-10934.94" offset="0x000001" length="0x20000"/>
+        <rom name="roms/aburner2/mpr-10936.98" offset="0x000002" length="0x20000"/>
+        <rom name="roms/aburner2/mpr-10938.102" offset="0x000003" length="0x20000"/>
+        <rom name="roms/aburner2/mpr-10933.91" offset="0x080000" length="0x20000"/>
+        <rom name="roms/aburner2/mpr-10935.95" offset="0x080001" length="0x20000"/>
+        <rom name="roms/aburner2/mpr-10937.99" offset="0x080002" length="0x20000"/>
+        <rom name="roms/aburner2/mpr-10939.103" offset="0x080003" length="0x20000"/>
+        <rom name="roms/aburner2/epr-11103.92" offset="0x100000" length="0x20000"/>
+        <rom name="roms/aburner2/epr-11104.96" offset="0x100001" length="0x20000"/>
+        <rom name="roms/aburner2/epr-11105.100" offset="0x100002" length="0x20000"/>
+        <rom name="roms/aburner2/epr-11106.104" offset="0x100003" length="0x20000"/>
+        <rom name="roms/aburner2/epr-11116.93" offset="0x180000" length="0x20000"/>
+        <rom name="roms/aburner2/epr-11117.97" offset="0x180001" length="0x20000"/>
+        <rom name="roms/aburner2/epr-11118.101" offset="0x180002" length="0x20000"/>
+        <rom name="roms/aburner2/epr-11119.105" offset="0x180003" length="0x20000"/>
+    </roms>
+    <!-- Sprite palette extracted from Main 68K Code at location 0x2EDF4 to 0x30AF4 Length 0x1D00. -->
+    <palette>roms/aburner2/aburner2.pal</palette>
+</sprites>
