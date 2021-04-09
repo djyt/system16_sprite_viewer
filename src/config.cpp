@@ -69,7 +69,12 @@ bool Config::load()
         sprites.rom.push_back(rom);
     }
 
-    sprites.palname = pt_config.get("sprites.palette", "");
+    sprites.palname = pt_config.get("sprites.palette.pal.<xmlattr>.name", "");
+    if (!sprites.palname.empty())
+    {
+        sprites.pal_bytes_per_entry = pt_config.get("sprites.palette.pal.<xmlattr>.bytes_per_entry", PAL_LENGTH);
+        sprites.pal_offset          = pt_config.get("sprites.palette.pal.<xmlattr>.offset", 0);
+    }
 
     return true;
 }

@@ -30,7 +30,10 @@ struct sprites_t
     // Information About Individual Rom Files
     std::vector <rom_t> rom;
 
+    // Palette Information
     std::string palname;
+    int pal_bytes_per_entry = PAL_LENGTH;
+    int pal_offset = 0;
 };
 
 

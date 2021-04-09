@@ -1,9 +1,7 @@
 #pragma once
 
-#include "stdint.hpp"
+#include "globals.hpp"
 #include "video.hpp"
-
-class video;
 
 class hwsprites
 {
@@ -15,8 +13,7 @@ public:
 
     hwsprites();
     ~hwsprites();
-    void init(const uint8_t*, int format, int length);
-    //void render();
+    void init(const uint8_t*, const int format, const int length);
     void (hwsprites::*render)();
 
 private:
@@ -26,6 +23,6 @@ private:
     void render4();
     void render8();
     void render16();
-    void draw_pixel(const int32_t x, const int32_t y, const uint16_t pix);
+    inline void draw_pixel(const int32_t x, const int32_t y, const uint16_t pix);
 };
 

@@ -1,8 +1,5 @@
 #pragma once
 
-// For reporting errors :)
-#include <iostream>
-
 #include <SDL.h>
 #include "stdint.hpp"
 #include "romloader.hpp"
@@ -25,7 +22,7 @@ public:
 
 	Video();
 	void draw_frame();
-	int init(uint8_t* pal, int pal_data_len);
+	int init(uint8_t* pal, const int pal_data_len, const int bytes_per_entry, const int pal_offset);
 	~Video();
 
     void sdl_screen_size();
@@ -40,8 +37,13 @@ public:
     void prev_palette();
 
 private:
-    static const uint16_t BYTES_PER_ENTRY = 32;
-    uint32_t rgb[BYTES_PER_ENTRY / 2];
+    uint32_t rgb[PAL_LENGTH/2];
+
+    // Source: Palette bytes per entry
+    int bytes_per_entry;
+
+    // Destination: Palette offset to match original game setup
+    int pal_offset;
 
     uint32_t *screen_pixels;
     uint8_t* palette;

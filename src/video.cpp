@@ -1,3 +1,4 @@
+#include <iostream>
 #include "globals.hpp"
 #include "video.hpp"
 
@@ -30,14 +31,17 @@ Video::~Video(void)
     delete sprite_layer;
 }
 
-int Video::init(uint8_t* pal, int pal_data_len)
+int Video::init(uint8_t* pal, const int pal_data_len, const int bytes_per_entry, const int pal_offset)
 {
     // Setup Custom Palette
     this->palette = pal;
+    this->bytes_per_entry = bytes_per_entry;
+    this->pal_offset = pal_offset;
+
     if (pal == nullptr || pal_data_len == -1)
         max_pal_entries = -1;
     else
-        max_pal_entries = (pal_data_len / BYTES_PER_ENTRY) - 1;
+        max_pal_entries = (pal_data_len / bytes_per_entry) - 1;
 
     // Setup SDL Screen size
     sdl_screen_size();
@@ -88,7 +92,7 @@ void Video::set_scale(int s)
 
 bool Video::resize_window(int w, int h)
 {
-    win_width  = w;
+    win_width  = std::max(S16_SCREEN_WIDTH + X_PADDING, w);
     win_height = h;
 
     src_rect.w = win_width;
@@ -155,7 +159,6 @@ bool Video::resize_window(int w, int h)
 void Video::draw_frame(void)
 {
     clear_screen();
-    //(sprite_layer.*(sprite_layer.render))();
     (sprite_layer->*(sprite_layer->render))();
     SDL_UpdateTexture(texture, NULL, screen_pixels, win_width * sizeof (Uint32));
     SDL_RenderCopy(renderer, texture, &src_rect, &dst_rect);
@@ -229,10 +232,10 @@ void Video::refresh_palette()
     if (selected_palette == PAL_GREYSCALE)
         return;
 
-    // 32 Bytes, 16 Entries Per Palette
-    for (int i = 0; i < (BYTES_PER_ENTRY / 2); i++)
+    // Default: 32 Bytes, 16 Entries Per Palette. Although some input formats vary
+    for (int i = 0; i < (bytes_per_entry / 2); i++)
     {
-        uint32_t pal = selected_palette * BYTES_PER_ENTRY;
+        uint32_t pal = selected_palette * bytes_per_entry;
 
         uint32_t a = (palette[(i * 2) + pal] << 8) | palette[(i * 2) + pal + 1];
         uint32_t r = (a & 0x000f) << 1; // r rrr0
@@ -249,6 +252,6 @@ void Video::refresh_palette()
         g = g * 255 / 31;
         b = b * 255 / 31;
 
-        rgb[i] = CURRENT_RGB();
+        rgb[i+pal_offset] = CURRENT_RGB();
     }
 }

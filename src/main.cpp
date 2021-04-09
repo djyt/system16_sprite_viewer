@@ -169,38 +169,6 @@ static void main_loop()
 
 int main(int argc, char* argv[])
 {
-    // Golden Axe Test
-    /*argc = 3;
-    argv[1] = "mpr-12379.ic12";
-    argv[2] = "mpr-12378.ic9";
-    argv[1] = "mpr-12381.ic13";
-    argv[2] = "mpr-12380.ic10";
-    argv[1] = "mpr-12383.ic14";
-    argv[2] = "mpr-12382.ic11";*/
-
-    // Shinobi Test
-    /*argc = 3;
-    argv[1] = "epr-11294.11";
-    argv[2] = "epr-11290.10";*/
-
-    // OutRun Test
-    /*argc = 5;
-    argv[1] = "mpr-10371.9";
-    argv[2] = "mpr-10373.10";
-    argv[3] = "mpr-10375.11";
-    argv[4] = "mpr-10377.12";*/
-
-    // PowerDrift Test
-    /*argc = 9;
-    argv[1] = "epr-11757.67";
-    argv[2] = "epr-11758.75";
-    argv[3] = "epr-11773.63";
-    argv[4] = "epr-11774.71";
-    argv[5] = "epr-11759.86";
-    argv[6] = "epr-11760.114";
-    argv[7] = "epr-11775.82";
-    argv[8] = "epr-11776.110";*/
-
     // Initialize timer and video systems
     if( SDL_Init( SDL_INIT_TIMER | SDL_INIT_VIDEO ) == -1 ) 
     { 
@@ -227,7 +195,8 @@ int main(int argc, char* argv[])
     romloader.init(config.sprites);
 
     // Initialize SDL Video
-    if (!video.init(romloader.pal_data, romloader.pal_data_len))
+    if (!video.init(romloader.pal_data, romloader.pal_data_len, 
+                    config.sprites.pal_bytes_per_entry, config.sprites.pal_offset))
         quit_func(1);
 
     // Convert to Sprite Format

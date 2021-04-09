@@ -6,6 +6,10 @@ namespace settings
 {
     const char PROGRAM_NAME[] = "System 16 Sprite Viewer";
     const char VERSION[] = "0.3";
+
+    // Padding around window edge
+    const static int X_PADDING = 3;
+    const static int Y_PADDING = 3;
 };
 
 namespace format
@@ -21,3 +25,6 @@ namespace format
 
 // Max width of screen on original hardware
 const static int S16_SCREEN_WIDTH = 320;
+
+// Default palette length in bytes
+const static int PAL_LENGTH = 32;

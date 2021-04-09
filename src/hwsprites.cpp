@@ -42,17 +42,21 @@
 
 hwsprites::hwsprites()
 {
-    src_width = 0;
-    src_height = 0;
-    render = nullptr;
+    src_width      = 0;
+    src_height     = 0;
+    display_y_off  = 0;
+    sprites_length = 0;
+    render         = nullptr;
+    sprdata        = nullptr;
 }
 
 hwsprites::~hwsprites()
 {
-    delete[] sprdata;
+    if (sprdata != nullptr)
+        delete[] sprdata;
 }
 
-void hwsprites::init(const uint8_t* src_sprites, int format, int length)
+void hwsprites::init(const uint8_t* src_sprites, const int format, const int length)
 {
     // Convert S16 tiles to a more useable format
     if (format == format::PIX8 || format == format::PIX16)
@@ -78,7 +82,6 @@ void hwsprites::init(const uint8_t* src_sprites, int format, int length)
                 sprdata[i] = (d3 << 24) | (d2 << 16) | (d1 << 8) | d0;
                 render = &hwsprites::render16;
             }
-
         }
     }
     else if (format == format::PIX4)
@@ -96,26 +99,23 @@ void hwsprites::init(const uint8_t* src_sprites, int format, int length)
         }
         render = &hwsprites::render4;
     }
-
-    display_y_off = 0;
 }
 
 // System 16B Rendering
 void hwsprites::render4()
 {
-    int32_t pix;
+    uint8_t pix;
     uint16_t pixels = 0;
-    int32_t y = 0;
+    int32_t y = settings::Y_PADDING;
 
     // Screen X-Coordinates
-    int32_t sx = 0;
+    int32_t sx = settings::X_PADDING;
  
     for (uint32_t counter = 0; counter < sprites_length; counter++)
     {
         pixels = sprdata[counter];
 
-        //if (sx == 0 && (pixels & 0xf) == 0xf)
-        if (sx == 0 && (!pixels || (pixels & 0xf) == 0xf))
+        if (sx == settings::X_PADDING && (!pixels || (pixels & 0xf) == 0xf))
             continue;
         
         if (y >= display_y_off && y < display_y_off + src_height)
@@ -135,7 +135,7 @@ void hwsprites::render4()
         // stop if the last pixel in the group was 0xf
         if ((pixels & 0xF) == 0xF)
         {
-            sx = 0;
+            sx = settings::X_PADDING;
             y++;
         }
     }
@@ -146,7 +146,7 @@ void hwsprites::render8()
 {
     uint8_t pix;
     uint32_t pixels = 0;
-    int32_t y = 0;
+    int32_t y = settings::Y_PADDING;
 
     // Screen X-Coordinates
     int32_t sx = 0;
@@ -239,7 +239,7 @@ void hwsprites::render16()
     }
 }
 
-void hwsprites::draw_pixel(const int32_t x, const int32_t y, const uint16_t pix)
+inline void hwsprites::draw_pixel(const int32_t x, const int32_t y, const uint16_t pix)
 {
     if (x >= 0 && x < S16_SCREEN_WIDTH && pix != 0 && pix != 15)
     {

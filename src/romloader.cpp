@@ -75,10 +75,20 @@ bool RomLoader::load(std::string filename, const int src_offset, const int dst_o
         src.seekg(src_offset, std::ios::beg);
 
     char ch;
+    int adr;
     for (int i = 0; i < length; i++)
     {
+        adr = (i * interleave) + dst_offset;
+        if (adr >= spr_data_len)
+        {
+            std::cerr << "Config Error: attempt to map " << filename << 
+                         " to 0x" << std::hex << adr << 
+                         " beyond total length of sprite roms 0x" << spr_data_len << std::endl;
+            src.close();
+            return false;
+        }
         src.get(ch); // Get from source
-        spr_data[(i * interleave) + dst_offset] = ch;
+        spr_data[adr] = ch;
     }
 
     src.close();
