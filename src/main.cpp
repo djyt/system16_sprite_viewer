@@ -14,24 +14,6 @@ static void quit_func(int code)
     exit(code);
 }
 
-static void handle_key_down(SDL_Keysym* keysym)
-{
-    switch(keysym->sym)
-    {
-        case SDLK_ESCAPE:
-            quit_func(0);
-            break;
-
-        case SDLK_SPACE:
-            //should_rotate = !should_rotate;
-            break;
-        
-        default:
-            break;
-    }
-    return;
-}
-
 static void process_events(void)
 {
     /* Our SDL event placeholder. */
@@ -205,11 +187,13 @@ int main(int argc, char* argv[])
     // Delete original data
     romloader.unload();
 
-    std::cout << "Page Up / Page Down & Cursors Up & Down to scroll" << std::endl;
-    std::cout << "Space to save a screenshot" << std::endl;
-
+    std::cout << "Page Up / Down      : Scroll" << std::endl;
+    std::cout << "Cursor Up / Down    : Scroll" << std::endl;
     if (romloader.pal_data_len > 0)
-        std::cout << "Cursors Left & Right to set a palette" << std::endl;
+        std::cout << "Cursor Left / Right : Change Palette" << std::endl;
+    std::cout << "+ / -               : Zoom" << std::endl;
+    std::cout << "B                   : Change Background Colour" << std::endl;
+    std::cout << "Space               : Save Screenshot" << std::endl;
 
     main_loop();
 
