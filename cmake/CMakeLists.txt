@@ -42,20 +42,19 @@ endif(TARGET)
     
 set(src_main
     "${main_cpp_base}/globals.hpp"
-    "${main_cpp_base}/hwsprites.hpp"
-    "${main_cpp_base}/input.hpp"
-    "${main_cpp_base}/palette.hpp"
-    "${main_cpp_base}/roms.hpp"
     "${main_cpp_base}/stdint.hpp"
-    "${main_cpp_base}/romloader.hpp"
-    "${main_cpp_base}/video.hpp"
 
     "${main_cpp_base}/hwsprites.cpp"
+    "${main_cpp_base}/hwsprites.hpp"
+    "${main_cpp_base}/config.cpp"
+    "${main_cpp_base}/config.hpp"
     "${main_cpp_base}/input.cpp"
+    "${main_cpp_base}/input.hpp"
     "${main_cpp_base}/main.cpp"
     "${main_cpp_base}/romloader.cpp"
-    "${main_cpp_base}/roms.cpp"
+    "${main_cpp_base}/romloader.hpp"
     "${main_cpp_base}/video.cpp"
+    "${main_cpp_base}/video.hpp"
     )
 
 
