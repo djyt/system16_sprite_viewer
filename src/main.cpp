@@ -193,7 +193,7 @@ int main(int argc, char* argv[])
         std::cout << "Cursor Left / Right : Change Palette" << std::endl;
     std::cout << "+ / -               : Zoom" << std::endl;
     std::cout << "B                   : Change Background Colour" << std::endl;
-    std::cout << "Space               : Save Screenshot" << std::endl;
+    std::cout << "S                   : Save Screenshot" << std::endl;
 
     main_loop();
 

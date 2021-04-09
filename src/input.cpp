@@ -79,7 +79,7 @@ void Input::handle_key(SDL_Keysym* keysym, bool is_pressed)
             keys[PAGEUP] = is_pressed;
             break;
 
-        case SDLK_SPACE:
+        case SDLK_s:
             keys[SAVE_BMP] = is_pressed;
             break;
 
