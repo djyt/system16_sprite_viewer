@@ -13,4 +13,18 @@
         <rom name="roms/pdrift/epr-11790.17" offset="0x040000" length="0x20000"/>
         <rom name="roms/pdrift/epr-11792.15" offset="0x040001" length="0x20000"/>
     </roms>
+    <!--
+        Palette RAM is on the Y CPU Map: $190000 - $93fff (mirrored at $194000).
+        $190000 - $190fff - Sky Palette
+        $191000 - $191fff - B-Sprites [Text and HUD]
+        $193000 - $193fff - Y-Sprites [Game Sprites]
+        
+        B-Sprite Palette RAM is populated from the Y CPU routine at $179da.
+        
+        Palette is copied from 0x61D2-0x71D2 (length: 0x1000) to 0x191000. 32 bytes per entry.
+        save pdrift_b.pal,0x61d2,0x1000
+    -->
+    <palette>
+        <pal name="roms/pdrift/pdrift_b.pal" bytes_per_entry="32" offset="0"/>
+    </palette>
 </sprites>
