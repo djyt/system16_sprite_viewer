@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Power Drift 'Y' Sprites. In-Game Objects -->
+<sprites>
+    <!-- Sprite Format:
+         0 = System 16 (Golden Axe, Shinobi etc.) / Y-Board B-Sprites
+         1 = OutRun / X-Board (AfterBurner etc.)
+         2 = Y-Board Y-Sprites (Power Drift etc.)
+    -->
+    <format>2</format>
+    <roms>
+        <rom name="roms/pdrift/epr-11757.67"  offset="0x000000" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11758.75"  offset="0x000001" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11773.63"  offset="0x000002" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11774.71"  offset="0x000003" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11759.86"  offset="0x000004" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11760.114" offset="0x000005" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11775.82"  offset="0x000006" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11776.110" offset="0x000007" length="0x20000"/>
+        
+        <rom name="roms/pdrift/epr-11761.66"  offset="0x100000" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11762.74"  offset="0x100001" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11777.62"  offset="0x100002" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11778.70"  offset="0x100003" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11763.85"  offset="0x100004" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11764.113" offset="0x100005" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11779.81"  offset="0x100006" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11780.109" offset="0x100007" length="0x20000"/>
+        
+        <rom name="roms/pdrift/epr-11765.65"  offset="0x200000" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11766.73"  offset="0x200001" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11781.61"  offset="0x200002" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11782.69"  offset="0x200003" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11767.84"  offset="0x200004" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11768.112" offset="0x200005" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11783.80"  offset="0x200006" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11784.108" offset="0x200007" length="0x20000"/>
+        
+        <rom name="roms/pdrift/epr-11769.64"  offset="0x300000" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11770.72"  offset="0x300001" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11785.60"  offset="0x300002" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11786.68"  offset="0x300003" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11771.83"  offset="0x300004" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11772.111" offset="0x300005" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11787.79"  offset="0x300006" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11788.107" offset="0x300007" length="0x20000"/>
+    </roms>
+    <!--
+        Palette RAM is on the Y CPU Map: $190000 - $93fff (mirrored at $194000).
+        $190000 - $190fff - Sky Palette
+        $191000 - $191fff - B-Sprites [Text and HUD]
+        $193000 - $193fff - Y-Sprites [Game Sprites]
+        
+        Y-Sprite Palette RAM is populated from the Y CPU routine at $17898.
+        
+        1/ There is a table of pointers $71d2 - $7276.
+           Each pointer references the address of the setup data.
+        
+        2/ This setup data is stored between $7276 - $aac6
+           The setup data is stored as a word counter, followed by a word address.
+           The word address is pointer to the actual 32 bytes of palette data.
+        
+        3/ The actual palette data is stored between $acda - $fe7a (length $51a0)
+           save pdrift.pal,0xACDA,0x51A0,2
+        
+           There is a LOT of palette data (653 entries), which makes this unwieldy. 
+           Example the main blue car is entry 345!
+    -->
+    <palette>
+        <pal name="roms/pdrift/pdrift_y.pal" bytes_per_entry="32" offset="0"/>
+    </palette>
+</sprites>

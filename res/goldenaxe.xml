@@ -22,6 +22,10 @@
         <rom name="roms/goldnaxe/mpr-12382.ic11" offset="0x140001" length="0x20000" continue="0x20000"/>
         <rom name="roms/goldnaxe/mpr-12383.ic14" offset="0x140000" length="0x20000" continue="0x20000"/>
     </roms>
-    <!-- Sprite palette extracted from Main 68K Code at location 0x14ed8. Length 0x2000. -->
-    <!--<palette>roms/goldnaxe/outrun.pal</palette>-->
+    <!-- In Game. Sprite Palette is at: 0x140800 to 0x141000
+         Ripped as follows: save goldnaxe.pal,0x38018,e00,0
+         Format is 28 bytes per entry. With 1 word padding at beginning and end -->
+    <palette>
+        <pal name="roms/goldnaxe/goldnaxe.pal" bytes_per_entry="28" offset="1"/>
+    </palette>
 </sprites>

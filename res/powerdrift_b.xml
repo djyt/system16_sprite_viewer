@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<sprites>
+    <!-- Sprite Format:
+         0 = System 16 (Golden Axe, Shinobi etc.) / Y-Board B-Sprites
+         1 = OutRun / X-Board (AfterBurner etc.)
+         2 = Y-Board Y-Sprites (Power Drift etc.)
+    -->
+    <format>0</format>
+    <roms>
+        <rom name="roms/pdrift/epr-11789.16" offset="0x000000" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11791.14" offset="0x000001" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11790.17" offset="0x040000" length="0x20000"/>
+        <rom name="roms/pdrift/epr-11792.15" offset="0x040001" length="0x20000"/>
+    </roms>
+</sprites>
