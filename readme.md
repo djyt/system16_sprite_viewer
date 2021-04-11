@@ -1,13 +1,13 @@
--------------------------------------------------------------------------------
-                              Sega System 16 Sprite Viewer
-                                reassembler.blogspot.com
-                                      
-                                    (c) 2021 dj_yt
-...............................................................................
+# Sega System 16 Sprite Viewer
 
--------------------------------------------------------------------------------
-  What is this? 
--------------------------------------------------------------------------------
+![shot1](https://user-images.githubusercontent.com/2414449/114319863-34efac00-9b0b-11eb-9310-2ca82dfd572f.png)
+![shot2](https://user-images.githubusercontent.com/2414449/114319864-35884280-9b0b-11eb-802e-49b360ffb0a5.png)
+![shot3](https://user-images.githubusercontent.com/2414449/114319865-35884280-9b0b-11eb-9df1-7757d3d7e78a.png)
+![shot4](https://user-images.githubusercontent.com/2414449/114319868-35884280-9b0b-11eb-8f78-7069c93fcd13.png)
+![shot5](https://user-images.githubusercontent.com/2414449/114319869-3620d900-9b0b-11eb-9b90-9a9577aeed60.png)
+
+
+## What is this? 
 
 This application is a quick and dirty Sega sprite viewer.
 
@@ -21,9 +21,9 @@ This sprite viewer supports sprites from the following arcade hardware:
 6/ Sega Y-Board (Power Drift, G-Loc etc.)
 
 
--------------------------------------------------------------------------------
- Getting Started
--------------------------------------------------------------------------------
+
+## Getting Started
+
 
 Try the application with one of the example configuration files. 
 
@@ -43,9 +43,8 @@ It helps to be familar with reading the MAME source code to set a game up
 correctly. 
 
 
--------------------------------------------------------------------------------
- Controls 
--------------------------------------------------------------------------------
+
+##  Controls 
 
 Cursor Up / Down    : Scroll
 Page Up / Down      : Scroll Page
@@ -57,9 +56,7 @@ S                   : Save Screenshot
 Space               : Toggle HUD
 
 
--------------------------------------------------------------------------------
- Limitations
--------------------------------------------------------------------------------
+ ## Limitations
 
 The sprite rom files do not contain any information aside from the raw pixel
 data. There's no palette information for example. This is always setup by the 
@@ -69,9 +66,7 @@ Therefore, there's no easy way to automate extracting palette data or any
 useful information regarding the sprites beyond what is displayed. 
 
 
--------------------------------------------------------------------------------
- Extracting Palettes
--------------------------------------------------------------------------------
+ ## Extracting Palettes
 
 Each palette entry is 32 bytes (16 colours per sprite @ 2 bytes each).
 
@@ -111,5 +106,3 @@ This palette is partially copied to palette RAM at runtime. But as mentioned,
 this would not contain every available palette entry. Example:
 
  save outrun.pal,0x121000,0x1000,0
-
--------------------------------------------------------------------------------
