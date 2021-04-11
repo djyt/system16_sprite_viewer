@@ -193,7 +193,7 @@ int main(int argc, char* argv[])
 
 
     save_name = argv[1];
-    int pos = save_name.find(".xml");
+    size_t pos = save_name.find(".xml");
     if (pos != std::string::npos) save_name.erase(pos);
 
     main_loop();
