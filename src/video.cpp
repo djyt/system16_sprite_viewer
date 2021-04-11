@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>  //include this to use string streams
 #include "globals.hpp"
 #include "video.hpp"
 
@@ -11,6 +12,7 @@ using namespace settings;
 
 Video::Video(void)
 {
+    font          = NULL;
     texture       = NULL;
     renderer      = NULL;
     surface       = NULL;
@@ -20,14 +22,13 @@ Video::Video(void)
     scn_height    = 0;
     bg_index      = 0;
     cycle_background(false);
+    show_hud = true;
     scale = 2;
 }
 
 Video::~Video(void)
 {
-    SDL_DestroyTexture(texture);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
+    close();
     delete sprite_layer;
 }
 
@@ -69,7 +70,39 @@ int Video::init(uint8_t* pal, const int pal_data_len, const int bytes_per_entry,
 
     selected_palette = PAL_GREYSCALE;
 
+    // Font stuff
+    font = TTF_OpenFont("cousine-regular.ttf", FONT_SIZE);
+    if (!font)
+    {
+        std::cerr << "Error opening font: " << TTF_GetError() << std::endl;
+        return 0;
+    }
+
     return 1;
+}
+
+void Video::close()
+{
+    if (texture != NULL)
+    {
+        SDL_DestroyTexture(texture);
+        texture = NULL;
+    }
+    if (renderer != NULL)
+    {
+        SDL_DestroyRenderer(renderer);
+        renderer = NULL;
+    }
+    if (window != NULL)
+    {
+        SDL_DestroyWindow(window);
+        window = NULL;
+    }
+    if (font != NULL)
+    {
+        TTF_CloseFont(font);
+        font = NULL;
+    }
 }
 
 void Video::sdl_screen_size()
@@ -160,9 +193,40 @@ void Video::draw_frame(void)
 {
     clear_screen();
     (sprite_layer->*(sprite_layer->render))();
-    SDL_UpdateTexture(texture, NULL, screen_pixels, win_width * sizeof (Uint32));
+    SDL_UpdateTexture(texture, NULL, screen_pixels, win_width * sizeof(Uint32));
     SDL_RenderCopy(renderer, texture, &src_rect, &dst_rect);
+
+    if (show_hud)
+    {
+        int h = 0;
+        h += draw_text("Palette: " + std::to_string(selected_palette), X_PADDING, Y_PADDING, ANCHOR_RIGHT);
+        h += draw_text("Y Pos: " + std::to_string(sprite_layer->display_y_off), X_PADDING, Y_PADDING + h, ANCHOR_RIGHT);
+        h += draw_text("Scale: " + std::to_string(scale) + "x", X_PADDING, Y_PADDING + h, ANCHOR_RIGHT);
+    }
+
     SDL_RenderPresent(renderer);
+}
+
+int Video::draw_text(std::string text, int x, int y, int anchor)
+{
+    if (font != NULL)
+    {
+        int tex_w = 0;
+        int tex_h = 0;
+        SDL_Surface* font_surface = TTF_RenderText_Solid(font, text.c_str(), font_color);
+        SDL_Texture* font_texture = SDL_CreateTextureFromSurface(renderer, font_surface);
+        SDL_QueryTexture(font_texture, NULL, NULL, &tex_w, &tex_h);
+
+        if (anchor == ANCHOR_RIGHT) 
+            x = win_width - tex_w - x;
+
+        SDL_Rect font_rect = { x, y, tex_w, tex_h };
+        SDL_RenderCopy(renderer, font_texture, NULL, &font_rect);
+        SDL_DestroyTexture(font_texture);
+        SDL_FreeSurface(font_surface);
+        return tex_h;
+    }
+    return 0;
 }
 
 void Video::set_pixel(uint32_t x, uint32_t y, uint8_t index)
@@ -215,6 +279,17 @@ void Video::prev_palette()
     refresh_palette();
 }
 
+void Video::scroll(int y_scr)
+{
+    sprite_layer->display_y_off += y_scr;
+    
+    if (sprite_layer->display_y_off < 0)
+        sprite_layer->display_y_off = 0;
+
+    else if (sprite_layer->display_y_off >= sprite_layer->y_max)
+        sprite_layer->display_y_off = sprite_layer->y_max;
+}
+
 // Cycle background colours used
 void Video::cycle_background(bool cycle)
 {
@@ -225,6 +300,13 @@ void Video::cycle_background(bool cycle)
         bg_index = 0;
 
     bg_colour = BG_COLOURS[bg_index];
+
+    font_color.r = font_color.g = font_color.b = bg_colour == 0xFFFFFF ? 0 : 0xff;
+}
+
+void Video::toggle_hud()
+{
+    show_hud = !show_hud;
 }
 
 void Video::refresh_palette()

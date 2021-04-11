@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL.h>
+#include <SDL_ttf.h>
 #include "stdint.hpp"
 #include "romloader.hpp"
 #include "hwsprites.hpp"
@@ -16,13 +17,12 @@ public:
     // Scale/Zoom value
     int scale;
 
-    int32_t selected_palette;
-
 	hwsprites* sprite_layer;
 
 	Video();
 	void draw_frame();
 	int init(uint8_t* pal, const int pal_data_len, const int bytes_per_entry, const int pal_offset);
+    void close();
 	~Video();
 
     void sdl_screen_size();
@@ -31,10 +31,11 @@ public:
     void set_pixel(uint32_t x, uint32_t y, uint8_t index);
     void clear_screen();
     void cycle_background(bool cycle = true);
-    void refresh_palette();
+    void toggle_hud();
     SDL_Surface* get_surface();
     void next_palette();
     void prev_palette();
+    void scroll(int y_scr);
 
 private:
     uint32_t rgb[PAL_LENGTH/2];
@@ -59,6 +60,10 @@ private:
     // SDL2 texture
     SDL_Texture *texture;
 
+    // Font
+    TTF_Font* font;
+    SDL_Color font_color;
+
     // SDL2 blitting rects for hw scaling 
     // ratio correction using SDL_RenderCopy()
     SDL_Rect src_rect;
@@ -70,6 +75,9 @@ private:
     // Original Screen Width & Height
     uint16_t scn_width, scn_height;
 
+    // Current palette selected
+    int32_t selected_palette;
+
     // Number of palette entries
     int max_pal_entries;
     const static int PAL_GREYSCALE = -1;
@@ -77,6 +85,18 @@ private:
     // Background colour cycling
     uint32_t bg_colour;
     int bg_index;
+
+    // Toggle HUD display
+    bool show_hud;
+
+    enum
+    {
+        ANCHOR_LEFT = 0,
+        ANCHOR_RIGHT = 1,
+    };
+
+    int draw_text(std::string, int x, int y, int anchor);
+    void refresh_palette();
 };
 
 extern Video video;

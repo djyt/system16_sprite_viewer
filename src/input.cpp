@@ -95,19 +95,16 @@ void Input::handle_key(SDL_Keysym* keysym, bool is_pressed)
             keys[CYCLE_BG] = is_pressed;
             break;
 
-        case SDLK_F2:
-            keys[STEP] = is_pressed;
+        case SDLK_SPACE:
+            keys[SHOW_HUD] = is_pressed;
             break;
 
-        case SDLK_F3:
-            keys[TIMER] = is_pressed;
+        case SDLK_HOME:
+            keys[HOME] = is_pressed;
             break;
 
-        case SDLK_F5:
-            keys[END_SEQ] = is_pressed;
-            break;
-        
-        default:
+        case SDLK_END:
+            keys[END] = is_pressed;
             break;
     }
 }

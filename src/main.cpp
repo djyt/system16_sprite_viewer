@@ -1,6 +1,14 @@
+/***************************************************************************
+    Sega System 16 Sprite Viewer
+
+    Copyright Chris White.
+    See license.txt for more details.
+***************************************************************************/
+
 #include <sstream>  //include this to use string streams
 #include <iostream>
 #include <SDL.h>
+#include <SDL_ttf.h>
 
 #include "globals.hpp"
 #include "config.hpp"
@@ -10,6 +18,7 @@
 
 static void quit_func(int code)
 {
+    TTF_Quit();
     SDL_Quit();
     exit(code);
 }
@@ -31,6 +40,8 @@ static void process_events(void)
                     video.resize_window(event.window.data1, event.window.data2);
                     video.draw_frame();
                 }
+                else if (event.window.event == SDL_WINDOWEVENT_CLOSE)
+                    video.close();
                 break;
 
             case SDL_KEYDOWN:
@@ -51,81 +62,39 @@ static void process_events(void)
 }
 
 // Increment each time we save
+std::string save_name;
 static int save_counter = 0;
+
+static void save_screenshot()
+{
+    std::string filename = save_name + std::to_string(save_counter) + ".bmp";
+
+    SDL_SaveBMP(video.get_surface(), filename.c_str());
+    save_counter++;
+
+    std::cout << "Saved file: " << filename.c_str() << std::endl;
+}
 
 static bool process_user_input()
 {
-    // Save screen to a bitmap
-    if (input.has_pressed(Input::SAVE_BMP))
-    {
-        std::string filename = "save" + std::to_string(save_counter);
-        filename += ".bmp";
+    if (input.has_pressed(Input::SAVE_BMP))         { save_screenshot(); return false; }
+    else if (input.is_pressed(Input::DOWN))         video.scroll(5);
+    else if (input.is_pressed(Input::UP))           video.scroll(-5);
+    else if (input.has_pressed(Input::PAGEDOWN))    video.scroll(video.win_height / video.scale);
+    else if (input.has_pressed(Input::PAGEUP))      video.scroll(-(video.win_height / video.scale));
+    else if (input.has_pressed(Input::HOME))        video.sprite_layer->display_y_off = 0;
+    else if (input.has_pressed(Input::END))         video.sprite_layer->display_y_off = video.sprite_layer->y_max;
+    else if (input.has_pressed(Input::LEFT))        video.prev_palette();
+    else if (input.has_pressed(Input::RIGHT))       video.next_palette();
+    else if (input.has_pressed(Input::ZOOM_IN))     video.set_scale(++video.scale);
+    else if (input.has_pressed(Input::ZOOM_OUT))    { if (video.scale > 1) video.set_scale(--video.scale); }
+    else if (input.has_pressed(Input::CYCLE_BG))    video.cycle_background();
+    else if (input.has_pressed(Input::SHOW_HUD))    video.toggle_hud();
+    else return false;
 
-        SDL_SaveBMP(video.get_surface(), filename.c_str());
-        save_counter++;
-
-        std::cout << "Saved file: " << filename.c_str() << std::endl;
-    }
-
-    // Move About
-    if (input.is_pressed(Input::DOWN))
-    {
-        video.sprite_layer->display_y_off += 5;
-        return true;
-    }
-    else if (input.is_pressed(Input::UP))
-    {
-        video.sprite_layer->display_y_off -= 5;
-
-        if (video.sprite_layer->display_y_off < 0)
-            video.sprite_layer->display_y_off = 0;
-
-        return true;
-    }
-    if (input.has_pressed(Input::PAGEDOWN))
-    {
-        video.sprite_layer->display_y_off += video.win_height / video.scale;
-        return true;
-    }
-    else if (input.has_pressed(Input::PAGEUP))
-    {
-        video.sprite_layer->display_y_off -= video.win_height / video.scale;
-
-        if (video.sprite_layer->display_y_off < 0)
-            video.sprite_layer->display_y_off = 0;
-        return true;
-    }
-
-    // Change Palette
-    else if (input.has_pressed(Input::LEFT))
-    {
-        video.prev_palette();
-        std::cout << "Palette:" << video.selected_palette << " Y:" << video.sprite_layer->display_y_off << std::endl;
-        return true;
-    }
-    else if (input.has_pressed(Input::RIGHT))
-    {
-        video.next_palette();
-        std::cout << "Palette:" << video.selected_palette << " Y:" << video.sprite_layer->display_y_off << std::endl;
-        return true;
-    }
-    else if (input.has_pressed(Input::ZOOM_IN))
-    {
-        video.set_scale(++video.scale);
-        return true;
-    }
-    else if (input.has_pressed(Input::ZOOM_OUT))
-    {
-        if (video.scale > 1) video.set_scale(--video.scale);
-        return true;
-    }
-    else if (input.has_pressed(Input::CYCLE_BG))
-    {
-        video.cycle_background();
-        return true;
-    }
-    return false;
+    return true;
 }
+
 
 static void tick()
 {
@@ -149,6 +118,14 @@ static void main_loop()
     }
 }
 
+// trim from end (in place)
+static inline void rtrim(std::string &s) 
+{
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }).base(), s.end());
+}
+
 int main(int argc, char* argv[])
 {
     // Initialize timer and video systems
@@ -156,7 +133,13 @@ int main(int argc, char* argv[])
     { 
         std::cerr << "SDL Initialization Failed: " << SDL_GetError() << std::endl;
         return 1; 
-    } 
+    }
+
+    if (TTF_Init() == -1)
+    {
+        std::cerr << "SDL TTF Initialization Failed." << std::endl;
+        return 1; 
+    }
 
     std::cout << "\n" << settings::PROGRAM_NAME << " " << settings::VERSION << std::endl;
     std::cout << "http://reassembler.blogspot.com\n" << std::endl;
@@ -165,21 +148,32 @@ int main(int argc, char* argv[])
     {
         std::cout << "Please specify an Sprite XML config file to load. Example:" << std::endl;
         std::cout << "OutRun:     " << argv[0] << " outrun.xml" << std::endl;
+        quit_func(1);
         return 1;
     }
 
     config.set_config_file(argv[1]);
     if (!config.load())
+    {
+        quit_func(1);
         return 1;
+    }
 
     // Load Roms
     RomLoader romloader;
-    romloader.init(config.sprites);
+    if (!romloader.init(config.sprites))
+    {
+        quit_func(1);
+        return 1;
+    }
 
     // Initialize SDL Video
-    if (!video.init(romloader.pal_data, romloader.pal_data_len, 
+    if (!video.init(romloader.pal_data, romloader.pal_data_len,
                     config.sprites.pal_bytes_per_entry, config.sprites.pal_offset))
+    {
         quit_func(1);
+        return 1;
+    }
 
     // Convert to Sprite Format
     video.sprite_layer->init(romloader.spr_data, romloader.format, romloader.spr_data_len);
@@ -187,16 +181,25 @@ int main(int argc, char* argv[])
     // Delete original data
     romloader.unload();
 
-    std::cout << "Page Up / Down      : Scroll" << std::endl;
     std::cout << "Cursor Up / Down    : Scroll" << std::endl;
+    std::cout << "Page Up / Down      : Scroll Page" << std::endl;
+    std::cout << "Home / End          : Scroll To Start / End" << std::endl;
     if (romloader.pal_data_len > 0)
         std::cout << "Cursor Left / Right : Change Palette" << std::endl;
     std::cout << "+ / -               : Zoom" << std::endl;
     std::cout << "B                   : Change Background Colour" << std::endl;
     std::cout << "S                   : Save Screenshot" << std::endl;
+    std::cout << "Space               : Toggle HUD " << std::endl;
+
+
+    save_name = argv[1];
+    int pos = save_name.find(".xml");
+    if (pos != std::string::npos) save_name.erase(pos);
 
     main_loop();
 
     // Never Reached
+    quit_func(0);
+
     return 0;
 }

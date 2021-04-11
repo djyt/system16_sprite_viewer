@@ -21,7 +21,7 @@ public:
 
     RomLoader();
     ~RomLoader();
-    void init(sprites_t sprites);
+    int init(sprites_t sprites);
     bool load(std::string filename, const int src_offset, const int dst_offset, const int length, const uint8_t mode = NORMAL);
     void unload();
     uint32_t get_filesize(std::string filename);
@@ -35,5 +35,4 @@ public:
 
 private:    
     int load_binary(std::string filename, uint8_t** dest);
-    void error(const char* p, const char* p2 = "");
 };

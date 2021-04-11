@@ -27,7 +27,7 @@ RomLoader::~RomLoader()
     if (pal_data != nullptr) delete[] pal_data;
 }
 
-void RomLoader::init(sprites_t sprites)
+int RomLoader::init(sprites_t sprites)
 {
     format = sprites.format;
 
@@ -46,6 +46,12 @@ void RomLoader::init(sprites_t sprites)
         case format::PIX16: interleave = 8; break;
     }
 
+    if (interleave == UNKNOWN)
+    {
+        std::cerr << "Unknown ROM format specified" << std::endl;
+        return 0;
+    }
+
     // Interleave roms
     for (rom_t& rom : sprites.rom)
         load(rom.filename, rom.src_offset, rom.dst_offset, rom.length, interleave);
@@ -54,11 +60,13 @@ void RomLoader::init(sprites_t sprites)
     pal_data_len = -1;
     if (!sprites.palname.empty())
         pal_data_len = load_binary(sprites.palname, &pal_data);
+
+    return 1;
 }
 
 void RomLoader::unload(void)
 {
-    delete[] spr_data;
+    if (spr_data != nullptr) delete[] spr_data;
 }
 
 bool RomLoader::load(std::string filename, const int src_offset, const int dst_offset, const int length, const uint8_t interleave)
@@ -117,11 +125,6 @@ int RomLoader::load_binary(std::string filename, uint8_t** dest)
     src.close();
 
     return fs; // return file size on success
-}
-
-void RomLoader::error(const char* p, const char* p2)
-{
-    std::cout << p << ' ' << p2 << std::endl;
 }
 
 uint32_t RomLoader::get_filesize(std::string filename)

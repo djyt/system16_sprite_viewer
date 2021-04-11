@@ -11,6 +11,9 @@ public:
     // Y Offset to draw sprites at
     int32_t display_y_off;
 
+    // Number of lines in sprite file
+    int32_t y_max;
+
     hwsprites();
     ~hwsprites();
     void init(const uint8_t*, const int format, const int length);
@@ -23,6 +26,9 @@ private:
     void render4();
     void render8();
     void render16();
-    inline void draw_pixel(const int32_t x, const int32_t y, const uint16_t pix);
+    int count4();
+    int count8();
+    int count16();
+    inline void draw_pixel(const int32_t x, const int32_t y, const uint8_t pix);
 };
 

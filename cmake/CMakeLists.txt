@@ -84,6 +84,7 @@ include_directories(
     ${main_cpp_base}
     ${BOOST_INCLUDEDIR}
     ${SDL2_INCLUDE_DIRS}
+    ${SDL2TTF_INCLUDE_DIRS}
 )
 
 link_directories(
@@ -92,5 +93,6 @@ link_directories(
 
 target_link_libraries(s16_viewer
     ${SDL2_LIBRARIES}
+    ${SDL2TTF_LIBRARIES}
     ${platform_link_libs}
 )

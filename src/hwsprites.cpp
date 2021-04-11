@@ -46,6 +46,7 @@ hwsprites::hwsprites()
     src_height     = 0;
     display_y_off  = 0;
     sprites_length = 0;
+    y_max          = 0;
     render         = nullptr;
     sprdata        = nullptr;
 }
@@ -73,15 +74,20 @@ void hwsprites::init(const uint8_t* src_sprites, const int format, const int len
             uint8_t d0 = *spr++;
 
             if (format == format::PIX8)
-            {
                 sprdata[i] = (d0 << 24) | (d1 << 16) | (d2 << 8) | d3;
-                render = &hwsprites::render8;
-            }
             else if (format == format::PIX16)
-            {
                 sprdata[i] = (d3 << 24) | (d2 << 16) | (d1 << 8) | d0;
-                render = &hwsprites::render16;
-            }
+        }
+
+        if (format == format::PIX8)
+        {
+            y_max = count8();
+            render = &hwsprites::render8;
+        }
+        else if (format == format::PIX16)
+        {
+            y_max = count16();
+            render = &hwsprites::render16;
         }
     }
     else if (format == format::PIX4)
@@ -97,6 +103,7 @@ void hwsprites::init(const uint8_t* src_sprites, const int format, const int len
 
             sprdata[i] = (d1 << 8) | d0;
         }
+        y_max = count4();
         render = &hwsprites::render4;
     }
 }
@@ -149,13 +156,13 @@ void hwsprites::render8()
     int32_t y = settings::Y_PADDING;
 
     // Screen X-Coordinates
-    int32_t sx = 0;
+    int32_t sx = settings::X_PADDING;
    
     for (uint32_t counter = 0; counter < sprites_length; counter++)
     {
         pixels = sprdata[counter];
 
-        if (sx == 0 && pixels == 0x000000F0)
+        if (sx == settings::X_PADDING && pixels == 0x000000F0)
             continue;
         
         if (y >= display_y_off && y < display_y_off + src_height)
@@ -179,7 +186,7 @@ void hwsprites::render8()
         // stop if the second-to-last pixel in the group was 0xf
         if ((pixels & 0x000000f0) == 0x000000f0)
         {
-            sx = 0;
+            sx = settings::X_PADDING;
             y++;
         }
     }
@@ -188,20 +195,20 @@ void hwsprites::render8()
 // Y-Board Rendering
 void hwsprites::render16()
 {
-    int32_t pix;
-    uint32_t pixelsL = sprdata[0];
-    uint32_t pixelsH = sprdata[1];
-    int32_t y = 0;
+    uint8_t pix;
+    uint32_t pixelsL = 0;
+    uint32_t pixelsH = 0;
+    int32_t y = settings::Y_PADDING;
 
     // Screen X-Coordinates
-    int32_t sx = 0;
+    int32_t sx = settings::X_PADDING;
    
     for (uint32_t counter = 0; counter < sprites_length; counter+=2)
     {
         pixelsH = sprdata[counter];
         pixelsL = sprdata[counter + 1];
 
-        if (sx == 0 && pixelsH == 0 && pixelsL == 0xF)
+        if (sx == settings::X_PADDING && pixelsH == 0 && pixelsL == 0xF)
             continue;
         
         if (y >= display_y_off && y < display_y_off + src_height)
@@ -233,16 +240,99 @@ void hwsprites::render16()
         // stop if the last pixel in the group was 0xf
         if ((pixelsL & 0xF) == 0xF)
         {
-            sx = 0;
+            sx = settings::X_PADDING;
             y++;
         }
     }
 }
 
-inline void hwsprites::draw_pixel(const int32_t x, const int32_t y, const uint16_t pix)
+// Count number of lines in file
+int hwsprites::count4()
 {
-    if (x >= 0 && x < S16_SCREEN_WIDTH && pix != 0 && pix != 15)
+    uint32_t pixels = 0;
+    int32_t y = 0;
+
+    // Screen X-Coordinates
+    int32_t sx = 0;
+
+    for (uint32_t counter = 0; counter < sprites_length; counter++)
     {
-        video.set_pixel(x, y, (uint8_t) pix);
+        pixels = sprdata[counter];
+
+        if (sx == 0 && (!pixels || (pixels & 0xf) == 0xf))
+            continue;
+
+        sx += 4;
+
+        if ((pixels & 0xF) == 0xF)
+        {
+            sx = 0;
+            y++;
+        }
+    }
+    return y;
+}
+
+int hwsprites::count8()
+{
+    uint32_t pixels = 0;
+    int32_t y = 0;
+    
+    // Screen X-Coordinates
+    int32_t sx = 0;
+
+    for (uint32_t counter = 0; counter < sprites_length; counter++)
+    {
+        pixels = sprdata[counter];
+
+        if (sx == 0 && pixels == 0x000000F0)
+            continue;
+
+        sx += 8;
+
+        // stop if the second-to-last pixel in the group was 0xf
+        if ((pixels & 0x000000f0) == 0x000000f0)
+        {
+            sx = 0;
+            y++;
+        }
+    }
+    return y;
+}
+
+int hwsprites::count16()
+{
+    uint32_t pixelsL = 0;
+    uint32_t pixelsH = 0;
+    int32_t y = 0;
+
+    // Screen X-Coordinates
+    int32_t sx = 0;
+
+    for (uint32_t counter = 0; counter < sprites_length; counter+=2)
+    {
+        pixelsH = sprdata[counter];
+        pixelsL = sprdata[counter + 1];
+
+        if (sx == 0 && pixelsH == 0 && pixelsL == 0xF)
+            continue;
+
+        sx += 16;
+
+        // stop if the last pixel in the group was 0xf
+        if ((pixelsL & 0xF) == 0xF)
+        {
+            sx = 0;
+            y++;
+        }
+    }
+    return y;
+}
+
+inline void hwsprites::draw_pixel(const int32_t x, const int32_t y, const uint8_t pix)
+{
+    if (x >= settings::X_PADDING && x < S16_SCREEN_WIDTH + settings::X_PADDING && pix != 0 && pix != 15)
+    {
+        video.set_pixel(x, y, pix);
     }   
 }

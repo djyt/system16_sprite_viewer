@@ -19,9 +19,9 @@ public:
         ZOOM_OUT  = 8,
         
         CYCLE_BG = 9,
-        STEP  = 10,
-        TIMER = 11,
-        END_SEQ = 12,
+        SHOW_HUD  = 10,
+        HOME = 11,
+        END = 12,
     };
 
     bool keys[13];
