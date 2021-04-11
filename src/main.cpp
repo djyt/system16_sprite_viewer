@@ -144,10 +144,10 @@ int main(int argc, char* argv[])
     std::cout << "\n" << settings::PROGRAM_NAME << " " << settings::VERSION << std::endl;
     std::cout << "http://reassembler.blogspot.com\n" << std::endl;
 
-    if (argc < 1)
+    if (argc < 2)
     {
         std::cout << "Please specify an Sprite XML config file to load. Example:" << std::endl;
-        std::cout << "OutRun:     " << argv[0] << " outrun.xml" << std::endl;
+        std::cout << argv[0] << " outrun.xml" << std::endl;
         quit_func(1);
         return 1;
     }
