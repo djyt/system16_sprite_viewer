@@ -60,7 +60,7 @@ hwsprites::~hwsprites()
 void hwsprites::init(const uint8_t* src_sprites, const int format, const int length)
 {
     // Convert S16 tiles to a more useable format
-    if (format == format::PIX8 || format == format::PIX16)
+    if (format == format::PIX8 || format == format::PIX8_SH || format == format::PIX16)
     {
         const uint8_t *spr = src_sprites;
         sprites_length = length >> 2;
@@ -73,7 +73,7 @@ void hwsprites::init(const uint8_t* src_sprites, const int format, const int len
             uint8_t d1 = *spr++;
             uint8_t d0 = *spr++;
 
-            if (format == format::PIX8)
+            if (format == format::PIX8 || format == format::PIX8_SH)
                 sprdata[i] = (d0 << 24) | (d1 << 16) | (d2 << 8) | d3;
             else if (format == format::PIX16)
                 sprdata[i] = (d3 << 24) | (d2 << 16) | (d1 << 8) | d0;
@@ -83,6 +83,11 @@ void hwsprites::init(const uint8_t* src_sprites, const int format, const int len
         {
             y_max = count8();
             render = &hwsprites::render8;
+        }
+        else if (format == format::PIX8_SH)
+        {
+            y_max = count4();
+            render = &hwsprites::render8_sh;
         }
         else if (format == format::PIX16)
         {
@@ -106,6 +111,7 @@ void hwsprites::init(const uint8_t* src_sprites, const int format, const int len
         y_max = count4();
         render = &hwsprites::render4;
     }
+    y_max += settings::Y_PADDING;
 }
 
 // System 16B Rendering
@@ -141,6 +147,50 @@ void hwsprites::render4()
 
         // stop if the last pixel in the group was 0xf
         if ((pixels & 0xF) == 0xF)
+        {
+            sx = settings::X_PADDING;
+            y++;
+        }
+    }
+}
+
+// Space Harrier Hardware
+void hwsprites::render8_sh()
+{
+    uint8_t pix;
+    uint32_t pixels = 0;
+    int32_t y = settings::Y_PADDING;
+
+    // Screen X-Coordinates
+    int32_t sx = settings::X_PADDING;
+
+    for (uint32_t counter = 0; counter < sprites_length; counter++)
+    {
+        pixels = sprdata[counter];
+
+        if (sx == settings::X_PADDING && (!pixels || (pixels & 0xf) == 0xf))
+            continue;
+
+        if (y >= display_y_off && y < display_y_off + src_height)
+        {        
+            // Screen Y-Coordinates
+            uint32_t sy = y - display_y_off;
+
+            // draw eight pixels
+            pix = (pixels >> 28) & 0xf; draw_pixel(sx, sy, pix); sx++;
+            pix = (pixels >> 24) & 0xf; draw_pixel(sx, sy, pix); sx++;
+            pix = (pixels >> 20) & 0xf; draw_pixel(sx, sy, pix); sx++;
+            pix = (pixels >> 16) & 0xf; draw_pixel(sx, sy, pix); sx++;
+            pix = (pixels >> 12) & 0xf; draw_pixel(sx, sy, pix); sx++;
+            pix = (pixels >>  8) & 0xf; draw_pixel(sx, sy, pix); sx++;
+            pix = (pixels >>  4) & 0xf; draw_pixel(sx, sy, pix); sx++;
+            pix = (pixels >>  0) & 0xf; draw_pixel(sx, sy, pix); sx++;
+        }
+        else
+            sx += 8;
+
+        // stop if the second-to-last pixel in the group was 0xf
+        if ((pixels & 0xf) == 0xf)
         {
             sx = settings::X_PADDING;
             y++;

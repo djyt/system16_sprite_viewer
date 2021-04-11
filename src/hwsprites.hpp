@@ -24,6 +24,7 @@ private:
     uint32_t* sprdata; // Converted sprites
 
     void render4();
+    void render8_sh();
     void render8();
     void render16();
     int count4();

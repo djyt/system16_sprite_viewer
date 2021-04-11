@@ -41,9 +41,10 @@ int RomLoader::init(sprites_t sprites)
     int interleave = UNKNOWN;
     switch (format)
     {
-        case format::PIX4:  interleave = 2; break;
-        case format::PIX8:  interleave = 4; break;
-        case format::PIX16: interleave = 8; break;
+        case format::PIX4:      interleave = 2; break;
+        case format::PIX8:
+        case format::PIX8_SH:   interleave = 4; break;
+        case format::PIX16:     interleave = 8; break;
     }
 
     if (interleave == UNKNOWN)
