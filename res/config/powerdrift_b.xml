@@ -4,7 +4,8 @@
     <!-- Sprite Format:
          0 = System 16 (Golden Axe, Shinobi etc.) / Y-Board B-Sprites
          1 = OutRun / X-Board (AfterBurner etc.)
-         2 = Y-Board Y-Sprites (Power Drift etc.)
+         2 = Space Harrier / Hang-On Hardware
+         3 = Y-Board Y-Sprites (Power Drift etc.)
     -->
     <format>0</format>
     <roms>

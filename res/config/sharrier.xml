@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<sprites>
+    <!-- Sprite Format:
+         0 = System 16 (Golden Axe, Shinobi etc.) / Y-Board B-Sprites
+         1 = OutRun / X-Board (AfterBurner etc.)
+         2 = Space Harrier / Hang-On Hardware
+         3 = Y-Board Y-Sprites (Power Drift etc.)
+    -->
+    <format>2</format>
+    <roms>
+        <rom name="roms/sharrier/epr-7230.ic36" offset="0x00000" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7222.ic28" offset="0x00001" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7214.ic18" offset="0x00002" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7206.ic8"  offset="0x00003" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7229.ic35" offset="0x20000" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7221.ic27" offset="0x20001" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7213.ic17" offset="0x20002" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7205.ic7"  offset="0x20003" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7228.ic34" offset="0x40000" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7220.ic26" offset="0x40001" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7212.ic16" offset="0x40002" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7204.ic6"  offset="0x40003" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7227.ic33" offset="0x60000" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7219.ic25" offset="0x60001" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7211.ic15" offset="0x60002" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7203.ic5"  offset="0x60003" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7226.ic32" offset="0x80000" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7218.ic24" offset="0x80001" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7210.ic14" offset="0x80002" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7202.ic4"  offset="0x80003" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7225.ic31" offset="0xa0000" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7217.ic23" offset="0xa0001" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7209.ic13" offset="0xa0002" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7201.ic3"  offset="0xa0003" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7224.ic30" offset="0xc0000" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7216.ic22" offset="0xc0001" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7208.ic12" offset="0xc0002" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7200.ic2"  offset="0xc0003" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7223.ic29" offset="0xe0000" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7215.ic21" offset="0xe0001" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7207.ic11" offset="0xe0002" length="0x8000"/>
+        <rom name="roms/sharrier/epr-7199.ic1"  offset="0xe0003" length="0x8000"/>
+    </roms>
+        
+    <!-- Palette RAM is located at: 0x110000 - 0x110fff. 
+         Sprite Palette data is located at $c368 - $e328         
+         Sprite Copy routine is at $2f46
+         save sharrier.pal,0xc368,0x1fc0,0
+    -->
+    <palette>
+        <pal name="roms/sharrier/sharrier.pal" bytes_per_entry="32" offset="0"/>
+    </palette>
+</sprites>
