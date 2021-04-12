@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<sprites>
+    <!-- Sprite Format:
+         0 = System 16 (Golden Axe, Shinobi etc.) / Y-Board B-Sprites
+         1 = OutRun / X-Board (AfterBurner etc.)
+         2 = Space Harrier / Hang-On Hardware
+         3 = Y-Board Y-Sprites (Power Drift etc.)
+    -->
+    <format>0</format>
+    <roms>
+        <rom name="roms/altbeast/epr-11677.b1" offset="0x000001" length="0x20000"/>
+        <rom name="roms/altbeast/epr-11681.b5" offset="0x000000" length="0x20000"/>
+        <rom name="roms/altbeast/epr-11678.b2" offset="0x040001" length="0x20000"/>
+        <rom name="roms/altbeast/epr-11682.b6" offset="0x040000" length="0x20000"/>
+        <rom name="roms/altbeast/epr-11679.b3" offset="0x080001" length="0x20000"/>
+        <rom name="roms/altbeast/epr-11683.b7" offset="0x080000" length="0x20000"/>
+        <rom name="roms/altbeast/epr-11680.b4" offset="0x0c0000" length="0x20000"/>
+        <rom name="roms/altbeast/epr-11684.b8" offset="0x0c0000" length="0x20000"/>
+    </roms>
+    <!-- Ripped as follows: save altbeast.pal,0x242a0,0x1be4,0
+         Format is 28 bytes per entry. With 1 word padding at beginning and end -->
+    <palette>
+        <pal name="roms/altbeast/altbeast.pal" bytes_per_entry="28" offset="1"/>
+    </palette>
+</sprites>
