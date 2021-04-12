@@ -24,10 +24,14 @@ This sprite viewer supports sprites from the following arcade hardware:
 ## Getting Started
 
 
-Try the application with one of the example configuration files. 
+Try the application with one of the example configuration files. You will find out the box support with palettes for:
 
-You will find out the box support for OutRun, AfterBurner, Space Harrier, 
-Golden Axe and others.
+- Space Harrier
+- OutRun
+- AfterBurner
+- Power Drift
+- Golden Axe
+- Altered Beast
 
 1. Copy the relevant sprite roms to a directory.
 2. Edit the appropriate xml file to reflect the location of the roms and 
@@ -35,8 +39,5 @@ Golden Axe and others.
 3. From the command line, run 's16_viewer <config.xml>' 
    Where config.xml is replaced with the name of the configuration file.
    
-It's possible to create your own configuration files for your favourite titles.
-I'll add more in due course.
+It's possible to create your own configuration files for your favourite titles. Please consult the [readme.txt](https://github.com/djyt/system16_sprite_viewer/blob/main/docs/readme.txt) for a more detailed guide. 
 
-It helps to be familar with reading the MAME source code to set a game up 
-correctly. 
