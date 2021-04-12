@@ -15,9 +15,9 @@ Sprites from the following arcade hardware are supported:
 ## Screenshots
 
 ![shot1](https://user-images.githubusercontent.com/2414449/114319863-34efac00-9b0b-11eb-9310-2ca82dfd572f.png)
+![shot4](https://user-images.githubusercontent.com/2414449/114319868-35884280-9b0b-11eb-8f78-7069c93fcd13.png)
 ![shot2](https://user-images.githubusercontent.com/2414449/114319864-35884280-9b0b-11eb-802e-49b360ffb0a5.png)
 ![shot3](https://user-images.githubusercontent.com/2414449/114319865-35884280-9b0b-11eb-9df1-7757d3d7e78a.png)
-![shot4](https://user-images.githubusercontent.com/2414449/114319868-35884280-9b0b-11eb-8f78-7069c93fcd13.png)
 ![shot5](https://user-images.githubusercontent.com/2414449/114319869-3620d900-9b0b-11eb-9b90-9a9577aeed60.png)
 
 
