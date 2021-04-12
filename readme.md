@@ -1,18 +1,17 @@
 # Sega System 16 Sprite Viewer
 
 
-This application is a quick and dirty Sega sprite viewer.
+A quick and dirty Sega arcade hardware sprite viewer, with optional palette support. 
 
+Sprites from the following arcade hardware are supported:
 
-This sprite viewer supports sprites from the following arcade hardware:
-```
-1. Sega Hang-On / Space Harrier
-2. Sega System 16
-3. Sega System 18
-4. Sega OutRun / Super Hang-On 
-5. Sega X-Board (AfterBurner, Thunderblade etc.)
-6. Sega Y-Board (Power Drift, G-Loc etc.)
-```
+- Sega Hang-On / Space Harrier
+- Sega System 16
+- Sega System 18
+- Sega OutRun / Super Hang-On 
+- Sega X-Board (AfterBurner, Thunderblade etc.)
+- Sega Y-Board (Power Drift, G-Loc etc.)
+
 ![shot1](https://user-images.githubusercontent.com/2414449/114319863-34efac00-9b0b-11eb-9310-2ca82dfd572f.png)
 ![shot2](https://user-images.githubusercontent.com/2414449/114319864-35884280-9b0b-11eb-802e-49b360ffb0a5.png)
 ![shot3](https://user-images.githubusercontent.com/2414449/114319865-35884280-9b0b-11eb-9df1-7757d3d7e78a.png)
@@ -36,7 +35,9 @@ Try the application with one of the example configuration files. You will find o
 1. Copy the relevant sprite roms to a directory.
 2. Edit the appropriate xml file to reflect the location of the roms and 
    palette data.
-3. From the command line, run 's16_viewer <config.xml>' 
+3. From the command line:
+> s16_viewer <config.xml>
+
    Where config.xml is replaced with the name of the configuration file.
    
 It's possible to create your own configuration files for your favourite titles. Please consult the [readme.txt](https://github.com/djyt/system16_sprite_viewer/blob/main/docs/readme.txt) for a more detailed guide. 
