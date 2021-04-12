@@ -112,4 +112,61 @@ this would not contain every available palette entry. Example:
 
  save outrun.pal,0x121000,0x1000,0
 
+...............................................................................
+
+For System 16 games, palette RAM is allocated dynamically at run-time. It can
+be derived from the MAME debugger by following these steps:
+
+1/ View the Sega 315-5195 Memory Mapper m_regs configuration.
+2/ Grab the value at offset $1d. Left shift by $10. 
+   This is the location of palette ram in memory.
+3/ Often the sprite palette is at offset +$800 within the palette RAM. 
+
+An example of the above for Altered Beast:
+
+1/ The offset $1d in the memory mapper has a value of $84. 
+
+2/ Left shift by $10 gets you memory location $840000.
+   Sprite Palette RAM is therefore located at $840800.
+
+3/ We can set a memory watch point at $840800. This informs us which part of 
+   the game-code is writing to the sprite colour palette.
+   
+4/ We can then determine a routine at $2dc0 is copying to this location from 
+   address $24ccc in the game code. (Using the 'altbeast' set in MAME). 
+   
+5/ If we set breakpoints at appropriate places in this routine we find the
+   copies from the following locations take place for the first few cycles.
+   
+   $242bc - $242d8
+   $242f4 - $24310   
+   $243b8 - $243d4   
+   $243d4 - $243f0
+   $24818 - $24834
+   $24ad4 - $24af0
+   $24ccc - $24ce8
+   
+   Note that this routine copies 28 bytes at a time. 
+   This is useful info as it tells us the length of each palette entry.
+   
+6/ This gives us a good idea of where the palette data is stored. We can trace
+   back through the code further to discover that the start pointer is setup
+   at the assembled code location $3c2c. 
+   This routine specifies $242a0 as the first sprite palette entry, so close 
+   to our first rough value we found above.
+   A byte is used (0-255) as an index into the table of entries. So we can 
+   assume that the table has 255 entries max.
+   At 28 bytes per entry, this means the table is $1be4 entries long.
+   
+7/ We can now rip the palette as follows using the MAME debugger:
+   save altbeast.pal,0x242a0,0x1be4,0
+   
+8/ Note that it is configured as follows in the XML:
+  <pal name="roms/altbeast/altbeast.pal" bytes_per_entry="28" offset="1"/>
+  
+  We specify the number of bytes per entry, and the fact that the palette
+  data is offset by 1 word when displayed by hardware. 
+
+You'll notice that this isn't a particularly easy or quick experience. :-D
+
 -------------------------------------------------------------------------------
