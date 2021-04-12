@@ -41,3 +41,7 @@ Try the application with one of the example configuration files. You will find o
    
 It's possible to create your own configuration files for your favourite titles. Please consult the [readme.txt](https://github.com/djyt/system16_sprite_viewer/blob/main/docs/readme.txt) for a more detailed guide. 
 
+
+## Advanced Reading
+
+- [Ripping Sega System 16 Sprites & Palettes: A Brief Guide](http://reassembler.blogspot.com/2021/04/ripping-sega-system-16-sprites-palettes.html)
