@@ -12,6 +12,8 @@ Sprites from the following arcade hardware are supported:
 - Sega X-Board (AfterBurner, Thunderblade etc.)
 - Sega Y-Board (Power Drift, G-Loc etc.)
 
+## Screenshots
+
 ![shot1](https://user-images.githubusercontent.com/2414449/114319863-34efac00-9b0b-11eb-9310-2ca82dfd572f.png)
 ![shot2](https://user-images.githubusercontent.com/2414449/114319864-35884280-9b0b-11eb-802e-49b360ffb0a5.png)
 ![shot3](https://user-images.githubusercontent.com/2414449/114319865-35884280-9b0b-11eb-9df1-7757d3d7e78a.png)
@@ -19,9 +21,7 @@ Sprites from the following arcade hardware are supported:
 ![shot5](https://user-images.githubusercontent.com/2414449/114319869-3620d900-9b0b-11eb-9b90-9a9577aeed60.png)
 
 
-
 ## Getting Started
-
 
 Try the application with one of the example configuration files. You will find out the box support with palettes for:
 
