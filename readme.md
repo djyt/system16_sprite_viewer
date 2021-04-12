@@ -35,8 +35,7 @@ Try the application with one of the example configuration files. You will find o
 1. Copy the relevant sprite roms to a directory.
 2. Edit the appropriate xml file to reflect the location of the roms and 
    palette data.
-3. From the command line:
-> s16_viewer <config.xml>
+3. From the command line: *s16_viewer <config.xml>*
 
    Where config.xml is replaced with the name of the configuration file.
    
