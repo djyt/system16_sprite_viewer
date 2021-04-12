@@ -2,42 +2,32 @@
 #include "hwsprites.hpp"
 
 /***************************************************************************
-    Video Emulation: OutRun Sprite Rendering Hardware.
+    Sprite Rendering Code.
     Based on MAME source code.
 
     Copyright Aaron Giles.
     All rights reserved.
 ***************************************************************************/
 /*
- Sprite data
+     Sprite data
 
- Sprite pattern data is arranged as groups of words, within each word every
- four bits defines one pixel, like so:
+     Sprite pattern data is arranged as groups of words, within each word every
+     four bits defines one pixel, like so:
 
- MSB          LSB
- aaaabbbbccccdddd
+     MSB          LSB
+     aaaabbbbccccdddd
 
- a = Pixel 0
- b = Pixel 1
- c = Pixel 2
- d = Pixel 3
+     a = Pixel 0
+     b = Pixel 1
+     c = Pixel 2
+     d = Pixel 3
 
- Some sprite pixel values have special meanings. Zero is transparent; such
- pixels are not displayed. A value of 15 indicates an end marker - this is
- also transparent, but additionally tells the sprite generator to stop
- drawing the current line of a sprite. It's the end markers that define the
- width of the sprite, which can vary on every line. I'll discuss the end
- markers later on.
-
- The pitch attribute for each sprite defines the value added to the start
- address after a line of the sprite has been rendered. The value is a signed
- byte, so $01 is 1 word, $FF is -1 word, and $00 really is zero, meaning the
- address is never changed.
-
- To draw vertically flipped sprites, the sprite pitch is made negative and
- the address is set to the end of the sprite rather than the beginning.
- The sprite generator will draw the last line of the sprite, then decrement
- the address to point the next to last line, render it, and so on.
+     Some sprite pixel values have special meanings. Zero is transparent; such
+     pixels are not displayed. A value of 15 indicates an end marker - this is
+     also transparent, but additionally tells the sprite generator to stop
+     drawing the current line of a sprite. It's the end markers that define the
+     width of the sprite, which can vary on every line. I'll discuss the end
+     markers later on.
 */
 
 hwsprites::hwsprites()
