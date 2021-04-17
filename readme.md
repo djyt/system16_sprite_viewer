@@ -27,6 +27,7 @@ Try the application with one of the example configuration files. You will find o
 
 - Space Harrier
 - OutRun
+- Super Hang On (Original & Limited Edition)
 - AfterBurner
 - Power Drift
 - Golden Axe
@@ -40,6 +41,8 @@ Try the application with one of the example configuration files. You will find o
    Where config.xml is replaced with the name of the configuration file.
    
 It's possible to create your own configuration files for your favourite titles. Please consult the [readme.txt](https://github.com/djyt/system16_sprite_viewer/blob/main/docs/readme.txt) for a more detailed guide. 
+
+The latest set of configuration files can be found [here](https://github.com/djyt/system16_sprite_viewer/tree/main/res/config), which may be newer than those bundled with the release.
 
 
 ## Advanced Reading
