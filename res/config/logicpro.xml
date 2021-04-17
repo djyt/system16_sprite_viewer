@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Logic Pro by Deniam Corporation. 
+     Uses the same format as Sega System 16 games -->
+
+<sprites>
+    <!-- Sprite Format:
+         0 = System 16 (Golden Axe, Shinobi etc.) / Y-Board B-Sprites / Hang-On
+         1 = OutRun / X-Board (AfterBurner etc.)
+         2 = Space Harrier
+         3 = Y-Board Y-Sprites (Power Drift etc.)
+    -->
+    <format>0</format>
+    <roms>
+        <rom name="roms/logicpro/logicpro.r9"  offset="0x000000" length="0x80000"/>
+        <rom name="roms/logicpro/logicpro.r8"  offset="0x000001" length="0x80000"/>
+    </roms>
+    <!-- Sprite palette extracted from Main 68K Code at location 0x364dc. Length 0x1000. -->
+    <palette>
+        <pal name="roms/logicpro/logicpro.pal" bytes_per_entry="32" offset="0"/>
+    </palette>
+</sprites>
