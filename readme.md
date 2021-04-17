@@ -46,6 +46,10 @@ It's possible to create your own configuration files for your favourite titles. 
 
 The latest set of configuration files can be found [here](https://github.com/djyt/system16_sprite_viewer/tree/main/res/config), which may be newer than those bundled with the release.
 
+## Contributing
+
+- Found something cool? Feel free to start a thread in the [Discussions](https://github.com/djyt/system16_sprite_viewer/discussions) area.
+- If you have an XML and Palette to contribute, feel free to do a Push Request or send me a link to your files. 
 
 ## Advanced Reading
 
