@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<sprites>
+    <format>0</format>
+    <roms>
+        <rom name="roms/hangon/epr-6820.ic34" offset="0x000000" length="0x8000"/>
+        <rom name="roms/hangon/epr-6819.ic27" offset="0x000001" length="0x8000"/>
+        <rom name="roms/hangon/epr-6822.ic35" offset="0x010000" length="0x8000"/>
+        <rom name="roms/hangon/epr-6821.ic28" offset="0x010001" length="0x8000"/>
+        <rom name="roms/hangon/epr-6824.ic36" offset="0x020000" length="0x8000"/>
+        <rom name="roms/hangon/epr-6823.ic29" offset="0x020001" length="0x8000"/>
+        <rom name="roms/hangon/epr-6826.ic37" offset="0x030000" length="0x8000"/>
+        <rom name="roms/hangon/epr-6825.ic30" offset="0x030001" length="0x8000"/>
+        <rom name="roms/hangon/epr-6828.ic38" offset="0x040000" length="0x8000"/>
+        <rom name="roms/hangon/epr-6827.ic31" offset="0x040001" length="0x8000"/>
+        <rom name="roms/hangon/epr-6830.ic39" offset="0x050000" length="0x8000"/>
+        <rom name="roms/hangon/epr-6829.ic32" offset="0x050001" length="0x8000"/>
+        <rom name="roms/hangon/epr-6846.ic25" offset="0x060000" length="0x8000"/>
+        <rom name="roms/hangon/epr-6845.ic18" offset="0x060001" length="0x8000"/>
+    </roms>
+    <!-- The sprite palette data for Hang-On is located starting at $ca4e in ROM and extends for 1920 bytes. 
+         The code which copies that data to sprite palette RAM is at $c918. -->
+    <!-- save hangon.pal,0xca4e,0x780,0 -->
+    <palette>
+        <pal name="roms/hangon/hangon.pal" bytes_per_entry="32" offset="0"/>
+    </palette>
+</sprites>
