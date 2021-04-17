@@ -33,12 +33,14 @@ Try the application with one of the example configuration files. You will find o
 - Golden Axe
 - Altered Beast
 
+
 1. Copy the relevant sprite roms to a directory.
 2. Edit the appropriate xml file to reflect the location of the roms and 
    palette data.
 3. From the command line: *s16_viewer <config.xml>*
 
    Where config.xml is replaced with the name of the configuration file.
+   
    
 It's possible to create your own configuration files for your favourite titles. Please consult the [readme.txt](https://github.com/djyt/system16_sprite_viewer/blob/main/docs/readme.txt) for a more detailed guide. 
 
