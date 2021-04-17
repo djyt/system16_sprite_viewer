@@ -26,8 +26,9 @@ Sprites from the following arcade hardware are supported:
 Try the application with one of the example configuration files. You will find out the box support with palettes for:
 
 - Space Harrier
-- OutRun
+- Hang On
 - Super Hang On (Original & Limited Edition)
+- OutRun
 - AfterBurner
 - Power Drift
 - Golden Axe
