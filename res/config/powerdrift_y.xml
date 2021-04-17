@@ -3,9 +3,9 @@
 <!-- Power Drift 'Y' Sprites. In-Game Objects -->
 <sprites>
     <!-- Sprite Format:
-         0 = System 16 (Golden Axe, Shinobi etc.) / Y-Board B-Sprites
+         0 = System 16 (Golden Axe, Shinobi etc.) / Y-Board B-Sprites / Hang-On
          1 = OutRun / X-Board (AfterBurner etc.)
-         2 = Space Harrier / Hang-On Hardware
+         2 = Space Harrier
          3 = Y-Board Y-Sprites (Power Drift etc.)
     -->
     <format>3</format>
