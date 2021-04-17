@@ -176,7 +176,7 @@ int main(int argc, char* argv[])
     }
 
     // Convert to Sprite Format
-    video.sprite_layer->init(romloader.spr_data, romloader.format, romloader.spr_data_len);
+    video.sprite_layer->init(romloader.spr_data, romloader.format, romloader.spr_data_len, config.sprites.swap_endian);
 
     // Delete original data
     romloader.unload();

@@ -47,7 +47,7 @@ hwsprites::~hwsprites()
         delete[] sprdata;
 }
 
-void hwsprites::init(const uint8_t* src_sprites, const int format, const int length)
+void hwsprites::init(const uint8_t* src_sprites, const int format, const int length, const bool swap_endian)
 {
     // Convert S16 tiles to a more useable format
     if (format == format::PIX8 || format == format::PIX8_SH || format == format::PIX16)
@@ -96,7 +96,7 @@ void hwsprites::init(const uint8_t* src_sprites, const int format, const int len
             uint8_t d1 = *spr++;
             uint8_t d0 = *spr++;
 
-            sprdata[i] = (d1 << 8) | d0;
+            sprdata[i] = !swap_endian ? (d1 << 8) | d0 : (d0 << 8) | d1;
         }
         y_max = count4();
         render = &hwsprites::render4;

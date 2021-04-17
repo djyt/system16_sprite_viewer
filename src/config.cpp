@@ -54,7 +54,9 @@ bool Config::load()
         return false;
     }
 
-    sprites.format = pt_config.get("sprites.format", (int)format::UNKNOWN);
+    sprites.format      = pt_config.get("sprites.format", (int)format::UNKNOWN);
+    sprites.interleave  = pt_config.get("sprites.interleave", 0);
+    sprites.swap_endian = pt_config.get("sprites.swap_endian", false);
 
     for (ptree::value_type &v : pt_config.get_child("sprites.roms"))
     {

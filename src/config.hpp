@@ -34,6 +34,10 @@ struct sprites_t
     std::string palname;
     int pal_bytes_per_entry = PAL_LENGTH;
     int pal_offset = 0;
+
+    // Interleave override
+    int interleave = 0;
+    bool swap_endian = false;
 };
 
 

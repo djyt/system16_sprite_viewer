@@ -16,7 +16,7 @@ public:
 
     hwsprites();
     ~hwsprites();
-    void init(const uint8_t*, const int format, const int length);
+    void init(const uint8_t*, const int format, const int length, const bool swap_endian);
     void (hwsprites::*render)();
 
 private:

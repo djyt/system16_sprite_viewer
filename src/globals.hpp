@@ -19,10 +19,10 @@ namespace format
     enum
     {
         UNKNOWN = -1,
-        PIX4  = 0,   // System 16 (Golden Axe, Shinobi etc.)
-        PIX8  = 1,   // OutRun / X-Board (AfterBurner etc.)
-        PIX8_SH = 2, // Space Harrier & Hang-On Hardware
-        PIX16 = 3,   // Y-Board (Power Drift etc.)
+        PIX4 = 0,       // System 16 (Golden Axe, Shinobi etc.)
+        PIX8 = 1,       // OutRun / X-Board (AfterBurner etc.)
+        PIX8_SH = 2,    // Space Harrier & Hang-On Hardware
+        PIX16 = 3,      // Y-Board (Power Drift etc.)
     };
 };
 

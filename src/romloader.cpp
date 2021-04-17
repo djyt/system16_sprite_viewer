@@ -37,15 +37,23 @@ int RomLoader::init(sprites_t sprites)
         spr_data_len += rom.length;
     spr_data = new uint8_t[spr_data_len];
 
+
     // Use correct interleave value
     int interleave = UNKNOWN;
-    switch (format)
+
+    if (sprites.interleave == 0)
     {
-        case format::PIX4:      interleave = 2; break;
-        case format::PIX8:
-        case format::PIX8_SH:   interleave = 4; break;
-        case format::PIX16:     interleave = 8; break;
+        switch (format)
+        {
+            case format::PIX4:      interleave = 2; break;
+            case format::PIX8:
+            case format::PIX8_SH:   interleave = 4; break;
+            case format::PIX16:     interleave = 8; break;
+        }
     }
+    // XML overrides default interleave settings
+    else
+        interleave = sprites.interleave;
 
     if (interleave == UNKNOWN)
     {
