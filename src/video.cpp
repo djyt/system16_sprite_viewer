@@ -365,9 +365,7 @@ void Video::refresh_palette()
                 b |= 1; // b bbbb
         }
 
-        r = r * 255 / 31;
-        g = g * 255 / 31;
-        b = b * 255 / 31;
+        r *= 8; g *= 8; b *= 8;
 
         pal_surface_p[i+pal_offset] = rgb[i+pal_offset] = CURRENT_RGB();
     }
