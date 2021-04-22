@@ -14,8 +14,7 @@ set(SDL2TTF_LIBRARIES ${sdl2_ttf_dir}/lib/x64/SDL2_ttf.lib)
 
 # Platform Specific Libraries
 set(platform_link_libs
-    opengl32 # For OpenGL
-    glu32    # For OpenGL
+
 )
 
 # Platform Specific Link Directories
