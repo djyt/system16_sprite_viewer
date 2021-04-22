@@ -5,13 +5,14 @@
 namespace settings
 {
     const char PROGRAM_NAME[] = "System 16 Sprite Viewer";
-    const char VERSION[] = "0.3";
+    const char VERSION[] = "0.31";
 
     // Padding around window edge
     const static int X_PADDING = 3;
     const static int Y_PADDING = 3;
 
     const static int FONT_SIZE = 24;
+    const static int PAL_BLOCK_SIZE = 24;
 };
 
 namespace format

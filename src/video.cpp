@@ -17,6 +17,8 @@ Video::Video(void)
     renderer      = NULL;
     surface       = NULL;
     screen_pixels = NULL;
+    pal_surface   = NULL;
+    pal_texture   = NULL;
     sprite_layer  = new hwsprites();
     scn_width     = 0;
     scn_height    = 0;
@@ -68,8 +70,6 @@ int Video::init(uint8_t* pal, const int pal_data_len, const int bytes_per_entry,
     Gshift = surface->format->Gshift;
     Bshift = surface->format->Bshift;
 
-    selected_palette = PAL_GREYSCALE;
-
     // Font stuff
     font = TTF_OpenFont("cousine-regular.ttf", FONT_SIZE);
     if (!font)
@@ -77,6 +77,24 @@ int Video::init(uint8_t* pal, const int pal_data_len, const int bytes_per_entry,
         std::cerr << "Error opening font: " << TTF_GetError() << std::endl;
         return 0;
     }
+
+    // Palette Widget
+    pal_surface = SDL_CreateRGBSurface(0, PAL_COLS, PAL_ROWS, BPP, 0, 0, 0, 0);
+    if (!pal_surface)
+    {
+        std::cerr << "Palette Surface creation failed: " << SDL_GetError() << std::endl;
+        return 0;
+    }
+    pal_surface_p = (uint32_t*)pal_surface->pixels;
+    pal_texture   = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, PAL_COLS, PAL_ROWS);
+    if (!pal_texture)
+    {
+        std::cerr << "Palette Texture creation failed: " << SDL_GetError() << std::endl;
+        return 0;
+    }
+
+    selected_palette = PAL_GREYSCALE;
+    refresh_palette();
 
     return 1;
 }
@@ -102,6 +120,17 @@ void Video::close()
     {
         TTF_CloseFont(font);
         font = NULL;
+    }
+    if (pal_surface != NULL)
+    {
+        SDL_FreeSurface(pal_surface);
+        pal_surface_p = NULL;
+        pal_surface = NULL;
+    }
+    if (pal_texture != NULL)
+    {
+        SDL_DestroyTexture(pal_texture);
+        pal_texture = NULL;
     }
 }
 
@@ -149,11 +178,10 @@ bool Video::resize_window(int w, int h)
         surface = NULL;
     }
 
-    const int bpp = 32;
     surface = SDL_CreateRGBSurface(0,
                                    win_width,
                                    win_height,
-                                   bpp,
+                                   BPP,
                                    0,
                                    0,
                                    0,
@@ -202,6 +230,7 @@ void Video::draw_frame(void)
         h += draw_text("Palette: " + std::to_string(selected_palette), X_PADDING, Y_PADDING, ANCHOR_RIGHT);
         h += draw_text("Y Pos: " + std::to_string(sprite_layer->display_y_off), X_PADDING, Y_PADDING + h, ANCHOR_RIGHT);
         h += draw_text("Scale: " + std::to_string(scale) + "x", X_PADDING, Y_PADDING + h, ANCHOR_RIGHT);
+        draw_palette(X_PADDING, Y_PADDING + h, ANCHOR_RIGHT);
     }
 
     SDL_RenderPresent(renderer);
@@ -229,22 +258,21 @@ int Video::draw_text(std::string text, int x, int y, int anchor)
     return 0;
 }
 
+void Video::draw_palette(int x, int y, int anchor)
+{
+    int tex_w = 0;
+    int tex_h = 0;
+    SDL_QueryTexture(pal_texture, NULL, NULL, &tex_w, &tex_h);
+    if (anchor == ANCHOR_RIGHT) 
+        x = win_width - (tex_w * PAL_BLOCK_SIZE) - x;
+    SDL_UpdateTexture(pal_texture, NULL, pal_surface_p, PAL_COLS * sizeof(Uint32));
+    SDL_Rect dst_rect = { x, y, tex_w * PAL_BLOCK_SIZE, tex_h * PAL_BLOCK_SIZE };
+    SDL_RenderCopy(renderer, pal_texture, NULL, &dst_rect);
+}
+
 void Video::set_pixel(uint32_t x, uint32_t y, uint8_t index)
 {
-    // Greyscale Palette
-    if (selected_palette == PAL_GREYSCALE)
-    {
-        index = 0xFF - (index << 4);
-        uint32_t r = index;
-        uint32_t g = index;
-        uint32_t b = index;
-        screen_pixels[(y * win_width) + x] = CURRENT_RGB();
-    }
-    // Colour Palette
-    else
-    {
-        screen_pixels[(y * win_width) + x] = rgb[index];
-    }
+    screen_pixels[(y * win_width) + x] = rgb[index];
 }
 
 void Video::clear_screen()
@@ -311,29 +339,36 @@ void Video::toggle_hud()
 
 void Video::refresh_palette()
 {
-    if (selected_palette == PAL_GREYSCALE)
-        return;
+    uint32_t pal, r, g, b;
 
     // Default: 32 Bytes, 16 Entries Per Palette. Although some input formats vary
     for (int i = 0; i < (bytes_per_entry / 2); i++)
     {
-        uint32_t pal = selected_palette * bytes_per_entry;
+        if (selected_palette == PAL_GREYSCALE)
+        {
+            pal = PAL_LENGTH - 1 - (i * 2);
+            r = g = b = pal;
+        }
+        else
+        {
+            pal = selected_palette * bytes_per_entry;
 
-        uint32_t a = (palette[(i * 2) + pal] << 8) | palette[(i * 2) + pal + 1];
-        uint32_t r = (a & 0x000f) << 1; // r rrr0
-        uint32_t g = (a & 0x00f0) >> 3; // g ggg0
-        uint32_t b = (a & 0x0f00) >> 7; // b bbb0
-        if ((a & 0x1000) != 0)
-            r |= 1; // r rrrr
-        if ((a & 0x2000) != 0)
-            g |= 1; // g gggg
-        if ((a & 0x4000) != 0)
-            b |= 1; // b bbbb
+            uint32_t a = (palette[(i * 2) + pal] << 8) | palette[(i * 2) + pal + 1];
+            r = (a & 0x000f) << 1; // r rrr0
+            g = (a & 0x00f0) >> 3; // g ggg0
+            b = (a & 0x0f00) >> 7; // b bbb0
+            if ((a & 0x1000) != 0)
+                r |= 1; // r rrrr
+            if ((a & 0x2000) != 0)
+                g |= 1; // g gggg
+            if ((a & 0x4000) != 0)
+                b |= 1; // b bbbb
+        }
 
         r = r * 255 / 31;
         g = g * 255 / 31;
         b = b * 255 / 31;
 
-        rgb[i+pal_offset] = CURRENT_RGB();
+        pal_surface_p[i+pal_offset] = rgb[i+pal_offset] = CURRENT_RGB();
     }
 }

@@ -38,7 +38,10 @@ public:
     void scroll(int y_scr);
 
 private:
-    uint32_t rgb[PAL_LENGTH/2];
+    static const int BPP = 32;
+    static const int PAL_ENTRIES = PAL_LENGTH / 2;
+
+    uint32_t rgb[PAL_ENTRIES];
 
     // Source: Palette bytes per entry
     int bytes_per_entry;
@@ -63,6 +66,13 @@ private:
     // Font
     TTF_Font* font;
     SDL_Color font_color;
+
+    // Palette
+    const static int PAL_COLS = PAL_ENTRIES / 2;
+    const static int PAL_ROWS = PAL_ENTRIES / 8;
+    SDL_Surface* pal_surface;
+    SDL_Texture* pal_texture;
+    uint32_t *pal_surface_p;
 
     // SDL2 blitting rects for hw scaling 
     // ratio correction using SDL_RenderCopy()
@@ -96,6 +106,7 @@ private:
     };
 
     int draw_text(std::string, int x, int y, int anchor);
+    void draw_palette(int x, int y, int anchor);
     void refresh_palette();
 };
 
