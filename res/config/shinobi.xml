@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Shinobi Main Rom Set -->
+<sprites>
+    <!-- Sprite Format:
+         0 = System 16 (Golden Axe, Shinobi etc.) / Y-Board B-Sprites / Hang-On
+         1 = OutRun / X-Board (AfterBurner etc.)
+         2 = Space Harrier
+         3 = Y-Board Y-Sprites (Power Drift etc.)
+    -->
+    <format>0</format>
+    <roms>
+        <rom name="roms/shinobi/epr-11290.10" offset="0x000001" length="0x10000"/>
+        <rom name="roms/shinobi/epr-11294.11" offset="0x000000" length="0x10000"/>
+        <rom name="roms/shinobi/epr-11291.17" offset="0x020001" length="0x10000"/>
+        <rom name="roms/shinobi/epr-11295.18" offset="0x020000" length="0x10000"/>
+        <rom name="roms/shinobi/epr-11292.23" offset="0x040001" length="0x10000"/>
+        <rom name="roms/shinobi/epr-11296.24" offset="0x040000" length="0x10000"/>
+        <rom name="roms/shinobi/epr-11293.29" offset="0x060001" length="0x10000"/>
+        <rom name="roms/shinobi/epr-11297.30" offset="0x060000" length="0x10000"/>
+    </roms>
+    <!-- In Game. Sprite Palette is at: 0x840800
+         Ripped as follows: save shinobi.pal,0x17022,0xc94,0
+         Format is 28 bytes per entry. With 1 word padding at beginning and end -->
+    <palette>
+        <pal name="roms/shinobi/shinobi.pal" bytes_per_entry="28" offset="1"/>
+    </palette>
+</sprites>
