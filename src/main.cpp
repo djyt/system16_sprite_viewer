@@ -118,14 +118,6 @@ static void main_loop()
     }
 }
 
-// trim from end (in place)
-static inline void rtrim(std::string &s) 
-{
-    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
-        return !std::isspace(ch);
-    }).base(), s.end());
-}
-
 int main(int argc, char* argv[])
 {
     // Initialize timer and video systems
