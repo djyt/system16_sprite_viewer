@@ -31,6 +31,7 @@ Try the application with one of the example configuration files. You will find o
 - OutRun
 - AfterBurner
 - Power Drift
+- Shinobi
 - Golden Axe
 - Altered Beast
 
