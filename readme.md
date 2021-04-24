@@ -25,15 +25,16 @@ Sprites from the following arcade hardware are supported:
 
 Try the application with one of the example configuration files. You will find out the box support with palettes for:
 
-- Space Harrier
-- Hang On
-- Super Hang On (Original & Limited Edition)
-- OutRun
 - AfterBurner
+- Altered Beast
+- Golden Axe
+- Hang On
+- OutRun
 - Power Drift
 - Shinobi
-- Golden Axe
-- Altered Beast
+- Space Harrier
+- Super Hang On (Original & Limited Edition)
+- WonderBoy 3: Monster Lair
 
 
 1. Copy the relevant sprite roms to a directory.
