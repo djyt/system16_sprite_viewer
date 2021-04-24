@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<sprites>
+    <!-- Sprite Format:
+         0 = System 16 (Golden Axe, Shinobi etc.) / Y-Board B-Sprites / Hang-On
+         1 = OutRun / X-Board (AfterBurner etc.)
+         2 = Space Harrier
+         3 = Y-Board Y-Sprites (Power Drift etc.)
+    -->
+    <format>0</format>
+    <roms>
+        <rom name="roms/wb3/epr-12090.b1" offset="0x000001" length="0x10000"/>
+        <rom name="roms/wb3/epr-12094.b5" offset="0x000000" length="0x10000"/>
+        <rom name="roms/wb3/epr-12091.b2" offset="0x020001" length="0x10000"/>
+        <rom name="roms/wb3/epr-12095.b6" offset="0x020000" length="0x10000"/>
+        <rom name="roms/wb3/epr-12092.b3" offset="0x040001" length="0x10000"/>
+        <rom name="roms/wb3/epr-12096.b7" offset="0x040000" length="0x10000"/>
+        <rom name="roms/wb3/epr-12093.b4" offset="0x060001" length="0x10000"/>
+        <rom name="roms/wb3/epr-12097.b8" offset="0x060000" length="0x10000"/>
+    </roms>
+    <!-- 
+         Format is 13 words per sprite palette with 2 words of padding at beginning and 1 word of padding at end 
+         
+         In-level sprite palettes occupy the first 48 out of 64 palette slots, from 0x840800 to 0x840dff
+         Code to copy that data to sprite palette ram is at 0x53ca (data in ROM is from 0x21762 for 0x4e0 bytes)
+         
+         Boss fight sprite palette data is held in ROM from 0x21c90 to 0x231e3 (0x1554 bytes)
+         14 stages, 14 boss fights, each boss fight loads 15 new palettes into slots 48-63 (0x840e00 - 0x840fe0)
+         
+         Pointer list at 0x212ae holds 14 pointers, 1 per boss fight palette arrangement
+         Code to copy boss fight palette data to sprite RAM is at 0x5362 (0xc912 = current stage)
+         Stage  1 - 0x21e16
+         Stage  2 - 0x22122
+         Stage  3 - 0x21f9c
+         Stage  4 - 0x21c90
+         Stage  5 - 0x225b4
+         Stage  6 - 0x2242e
+         Stage  7 - 0x22bcc
+         Stage  8 - 0x222a8
+         Stage  9 - 0x22ed8
+         Stage 10 - 0x228c0
+         Stage 11 - 0x22a46
+         Stage 12 - 0x22d52
+         Stage 13 - 0x2273a
+         Stage 14 - 0x2305e
+         
+         Many of the palettes for the boss fights are blank and have been removed from the palette file
+         -->
+    <palette>
+        <pal name="roms/wb3/wb3.pal" bytes_per_entry="26" offset="2"/>
+    </palette>
+</sprites>
