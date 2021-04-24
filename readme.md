@@ -36,7 +36,7 @@ Try the application with one of the example configuration files. You will find o
 - Super Hang On (Original & Limited Edition)
 - WonderBoy 3: Monster Lair
 
-
+<br />
 1. Copy the relevant sprite roms to a directory.
 2. Edit the appropriate xml file to reflect the location of the roms and 
    palette data.
@@ -44,7 +44,7 @@ Try the application with one of the example configuration files. You will find o
 
    Where config.xml is replaced with the name of the configuration file.
    
-   
+ <br />  
 It's possible to create your own configuration files for your favourite titles. Please consult the [readme.txt](https://github.com/djyt/system16_sprite_viewer/blob/main/docs/readme.txt) for a more detailed guide. 
 
 The latest set of configuration files can be found [here](https://github.com/djyt/system16_sprite_viewer/tree/main/res/config), which may be newer than those bundled with the release.
